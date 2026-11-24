@@ -52,19 +52,20 @@ TidyFlow/
 - [x] Add GitHub Actions CI workflow (`.github/workflows/ci.yml`: build + test on push/PR)
 
 ### Phase 1 — Core Engine & Safety Layer (`TidyFlow.Core`)
-- [ ] **Safe Scanner:** Enumerate files with filters; skip in-progress downloads (`.crdownload`, `.part`, `.tmp`) and hidden/system files by default
-- [ ] **Organize Engine:**
+- [x] **Safe Scanner:** Enumerate files with filters; skip in-progress downloads (`.crdownload`, `.part`, `.tmp`, `.opdownload`, `.download`) and Office `~$` lock files / hidden-system files by default
+- [x] **Organize Engine:**
   - Built-in categories (`Documents`, `Images`, `Videos`, `Audio`, `Installers`, `Archives`, `Code`, `Others`)
-  - Date grouping (`YYYY-MM` or `YYYY/MM`)
+  - Date grouping (`YYYY-MM`, `YYYY/MM`, or `YYYY`)
   - Custom keyword/extension -> target folder rules
-- [ ] **List-Based Rename Engine:**
+- [x] **List-Based Rename Engine:**
   - Map an ordered list of names 1-to-1 onto selected files
   - Preserve original file extension automatically (optional toggle)
-  - Sanitize invalid Windows filename characters (`\ / : * ? " < > |`)
-  - Handle count mismatch gracefully (warn, skip extras, or apply fallback pattern)
-  - Optional template helpers (`{index}`, `{date}`, prefix/suffix, clean `(1)`/`Copy of`)
-- [ ] **Preview & Conflict Resolver:** Generate `OperationPlan` (`SourcePath` -> `DestinationPath`, status/warnings, auto-numbering collisions without overwriting)
-- [ ] **Transaction & Undo Manager:** Save executed batch operations to local JSON history so users can roll back moves/renames safely
+  - Sanitize invalid Windows filename characters (`\ / : * ? " < > |`) & reserved names (`CON`, `NUL`, etc.)
+  - Handle count mismatch gracefully (skip extras or pad with original name / prefix + index)
+  - Optional template helpers (`{index}`, `{name}`, `{date}`, `{ext}`, Find/Replace, clean `(1)`/`Copy of`)
+- [x] **Preview & Conflict Resolver:** Generate `OperationPlan` (`SourcePath` -> `DestinationPath`, status/notes, auto-numbering collisions without overwriting)
+- [x] **Transaction & Undo Manager:** Save executed batch operations to local JSON history (`BatchExecutor`), cycle-safe two-phase move staging, and `UndoLatest()` rollback with empty folder cleanup
+- [x] **Preset Store:** JSON persistence (`PresetStore`) for custom organize rules and saved name lists
 
 ### Phase 2 — Desktop UI (`TidyFlow.App` with WPF-UI)
 - [ ] Modern Fluent Windows 11 shell (Dark/Light theme)

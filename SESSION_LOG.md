@@ -30,16 +30,23 @@
   - `gh` CLI (optional, not required)
 
 ### Files Created / Modified
-- Created [PLAN.md](file:///d:/Working/workspaces/SmartToolForPC/PLAN.md) — Full architecture, phased roadmap, and safety rules for TidyFlow (Phase 0 marked complete).
+- Created [PLAN.md](file:///d:/Working/workspaces/SmartToolForPC/PLAN.md) — Full architecture, phased roadmap, and safety rules for TidyFlow (Phase 0 & Phase 1 complete).
 - Created [SESSION_LOG.md](file:///d:/Working/workspaces/SmartToolForPC/SESSION_LOG.md) — This persistent session & edit tracker.
-- Initialized Git (`main`) and linked `origin` to `https://github.com/16521803-star/TidyFlow.git`.
+- Initialized Git (`main`) and pushed Phase 0 commit `f57b950` to `https://github.com/16521803-star/TidyFlow.git`.
 - Created [.gitignore](file:///d:/Working/workspaces/SmartToolForPC/.gitignore), [LICENSE](file:///d:/Working/workspaces/SmartToolForPC/LICENSE), [README.md](file:///d:/Working/workspaces/SmartToolForPC/README.md), and [.github/workflows/ci.yml](file:///d:/Working/workspaces/SmartToolForPC/.github/workflows/ci.yml).
 - Installed `.NET 8 SDK` (`8.0.428`) and scaffolded [TidyFlow.sln](file:///d:/Working/workspaces/SmartToolForPC/TidyFlow.sln):
   - `src/TidyFlow.Core/TidyFlow.Core.csproj` (`net8.0`)
   - `src/TidyFlow.App/TidyFlow.App.csproj` (`net8.0-windows`, `WPF-UI 4.3.0`, references `TidyFlow.Core`)
   - `tests/TidyFlow.Core.Tests/TidyFlow.Core.Tests.csproj` (`net8.0`, xUnit, references `TidyFlow.Core`)
-- Verified `dotnet build TidyFlow.sln --configuration Release` (`0 Warning(s), 0 Error(s)`) and `dotnet test TidyFlow.sln --no-build --configuration Release` (`1/1` passed).
+- Implemented **Phase 1 (`TidyFlow.Core`)** & unit tests (`tests/TidyFlow.Core.Tests`):
+  - Models: `FileEntry.cs`, `OperationPlan.cs`
+  - Scanning: `FolderScanOptions.cs`, `FolderScanner.cs`
+  - Organizing: `FileCategoryRegistry.cs`, `OrganizeOptions.cs`, `FolderOrganizer.cs`
+  - Renaming: `FilenameSanitizer.cs`, `ListRenameOptions.cs`, `BatchRenamer.cs`
+  - Safety & Execution: `ConflictResolver.cs`, `TransactionModels.cs`, `BatchExecutor.cs` (two-phase staging for cyclic/case-only renames + JSON Undo history)
+  - Presets: `PresetStore.cs`
+  - Tests: `TempTestWorkspace.cs`, `FolderScannerTests.cs`, `FolderOrganizerTests.cs`, `BatchRenamerTests.cs`, `BatchExecutorTests.cs`
+- Verified `dotnet build TidyFlow.sln --configuration Release` (`0 Warning(s), 0 Error(s)`) and `dotnet test TidyFlow.sln --no-build --configuration Release` (`11/11` passed).
 
 ### Next Steps
-1. Commit Phase 0 scaffold and push `main` to `origin` (`https://github.com/16521803-star/TidyFlow.git`) if ready.
-2. Begin **Phase 1 (`TidyFlow.Core`)**: Safe folder scanner, category/date/rule organizer, list-based batch renamer, dry-run preview, conflict resolution, and persistent Undo log + unit tests.
+1. Begin **Phase 2 (`TidyFlow.App`)**: Build the Fluent WPF-UI desktop interface (Organize Folder tab, List-Based Batch Rename tab with drag-drop/reordering & clipboard list paste, Live Preview grid, and 1-Click Undo).
