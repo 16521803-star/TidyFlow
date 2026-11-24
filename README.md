@@ -73,9 +73,10 @@ After reserving your app in **Microsoft Partner Center**, pass your assigned `Pa
 ```powershell
 .\scripts\pack-msix.ps1 `
   -Version 0.7.0 `
-  -PackageName "YourPartnerCenterId.TidyFlow" `
+  -PackageName "HLTPRODEV.TidyFlow-SmartFileOrganizer" `
   -Publisher "CN=YOUR-PARTNER-CENTER-PUBLISHER-GUID" `
-  -PublisherDisplayName "Thang Huynh"
+  -PublisherDisplayName "HLTPRODEV" `
+  -AppDisplayName "TidyFlow - Smart File Organizer"
 ```
 This outputs `publish/msix/TidyFlow-0.7.0-x64.msix` ready to upload to Partner Center (alongside `PRIVACY.md` and `packaging/store-listings/Logo300x300.png` / `Logo1000x1000.png`).
 

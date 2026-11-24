@@ -1,8 +1,9 @@
 param(
     [string]$Version = "0.7.0",
-    [string]$PackageName = "ThangHuynh.TidyFlow",
-    [string]$Publisher = "CN=ThangHuynh",
-    [string]$PublisherDisplayName = "Thang Huynh"
+    [string]$PackageName = "HLTPRODEV.TidyFlow-SmartFileOrganizer",
+    [string]$Publisher = "CN=9E0D3E41-10E9-4314-AFD1-0F25C79E11C4",
+    [string]$PublisherDisplayName = "HLTPRODEV",
+    [string]$AppDisplayName = "TidyFlow - Smart File Organizer"
 )
 
 $ErrorActionPreference = "Stop"
@@ -66,11 +67,13 @@ try {
     Copy-Item "packaging/msix/Assets/*" $assetsDst -Force
 
     # Materialize AppxManifest.xml
+    $xmlEscape = { param([string]$v) [System.Security.SecurityElement]::Escape($v) }
     $manifestContent = Get-Content "packaging/msix/AppxManifest.template.xml" -Raw
-    $manifestContent = $manifestContent.Replace("{{PACKAGE_NAME}}", $PackageName)
-    $manifestContent = $manifestContent.Replace("{{PUBLISHER}}", $Publisher)
-    $manifestContent = $manifestContent.Replace("{{PUBLISHER_DISPLAY_NAME}}", $PublisherDisplayName)
-    $manifestContent = $manifestContent.Replace("{{VERSION}}", $msixVersion)
+    $manifestContent = $manifestContent.Replace("{{PACKAGE_NAME}}", (& $xmlEscape $PackageName))
+    $manifestContent = $manifestContent.Replace("{{PUBLISHER}}", (& $xmlEscape $Publisher))
+    $manifestContent = $manifestContent.Replace("{{PUBLISHER_DISPLAY_NAME}}", (& $xmlEscape $PublisherDisplayName))
+    $manifestContent = $manifestContent.Replace("{{APP_DISPLAY_NAME}}", (& $xmlEscape $AppDisplayName))
+    $manifestContent = $manifestContent.Replace("{{VERSION}}", (& $xmlEscape $msixVersion))
     $manifestPath = Join-Path $stagingDir "AppxManifest.xml"
     [System.IO.File]::WriteAllText($manifestPath, $manifestContent, [System.Text.UTF8Encoding]::new($false))
 

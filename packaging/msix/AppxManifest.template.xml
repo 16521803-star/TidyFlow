@@ -12,7 +12,7 @@
     ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>TidyFlow</DisplayName>
+    <DisplayName>{{APP_DISPLAY_NAME}}</DisplayName>
     <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
