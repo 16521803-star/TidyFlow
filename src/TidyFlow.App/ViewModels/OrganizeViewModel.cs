@@ -12,22 +12,30 @@ namespace TidyFlow.App.ViewModels;
 public sealed record CustomRuleItem(
     string TargetFolder,
     string KeywordsCsv,
-    string ExtensionsCsv)
+    string ExtensionsCsv,
+    RuleMatchLogic MatchLogic = RuleMatchLogic.MatchAny,
+    int? MinimumAgeDays = null)
 {
+    public string LogicDisplay => MatchLogic == RuleMatchLogic.MatchAll ? "AND" : "OR";
+
+    public string AgeDisplay => MinimumAgeDays is > 0 ? $" · >= {MinimumAgeDays}d" : string.Empty;
+
     public KeywordOrganizeRule ToCoreRule()
     {
         var keywords = KeywordsCsv
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var extensions = ExtensionsCsv
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        return new KeywordOrganizeRule(TargetFolder.Trim(), keywords, extensions);
+        return new KeywordOrganizeRule(TargetFolder.Trim(), keywords, extensions, MatchLogic, MinimumAgeDays);
     }
 
     public static CustomRuleItem FromCoreRule(KeywordOrganizeRule rule) =>
         new(
             rule.TargetFolderName,
             string.Join(", ", rule.Keywords),
-            string.Join(", ", rule.Extensions));
+            string.Join(", ", rule.Extensions),
+            rule.MatchLogic,
+            rule.MinimumAgeDays);
 }
 
 public sealed class OrganizeViewModel : ObservableObject
@@ -47,6 +55,9 @@ public sealed class OrganizeViewModel : ObservableObject
     private string _newRuleFolder = string.Empty;
     private string _newRuleKeywords = string.Empty;
     private string _newRuleExtensions = string.Empty;
+    private RuleMatchLogic _newRuleMatchLogic = RuleMatchLogic.MatchAny;
+    private string _newRuleAgeDaysText = string.Empty;
+    private string _globalMinimumAgeDaysText = string.Empty;
     private string _previewSummary = "Select a folder (e.g. Downloads) and click Scan & Preview.";
     private OperationPlan? _currentPlan;
     private IReadOnlyList<FileEntry> _scannedFiles = Array.Empty<FileEntry>();
@@ -79,6 +90,8 @@ public sealed class OrganizeViewModel : ObservableObject
     public IReadOnlyList<OrganizeMode> AvailableModes { get; } = Enum.GetValues<OrganizeMode>();
 
     public IReadOnlyList<DateGroupingFormat> AvailableDateFormats { get; } = Enum.GetValues<DateGroupingFormat>();
+
+    public IReadOnlyList<RuleMatchLogic> AvailableRuleMatchLogics { get; } = Enum.GetValues<RuleMatchLogic>();
 
     public RelayCommand SelectDownloadsCommand { get; }
     public RelayCommand ScanAndPreviewCommand { get; }
@@ -173,6 +186,30 @@ public sealed class OrganizeViewModel : ObservableObject
         set => SetProperty(ref _newRuleExtensions, value);
     }
 
+    public RuleMatchLogic NewRuleMatchLogic
+    {
+        get => _newRuleMatchLogic;
+        set => SetProperty(ref _newRuleMatchLogic, value);
+    }
+
+    public string NewRuleAgeDaysText
+    {
+        get => _newRuleAgeDaysText;
+        set => SetProperty(ref _newRuleAgeDaysText, value);
+    }
+
+    public string GlobalMinimumAgeDaysText
+    {
+        get => _globalMinimumAgeDaysText;
+        set
+        {
+            if (SetProperty(ref _globalMinimumAgeDaysText, value))
+            {
+                RebuildPreviewFromScanned();
+            }
+        }
+    }
+
     public string PreviewSummary
     {
         get => _previewSummary;
@@ -244,6 +281,7 @@ public sealed class OrganizeViewModel : ObservableObject
         {
             Mode = SelectedMode,
             DateFormat = SelectedDateFormat,
+            MinimumAgeDays = ParsePositiveInt(GlobalMinimumAgeDaysText),
             CustomRules = CustomRules.Select(r => r.ToCoreRule()).ToList()
         };
 
@@ -266,14 +304,23 @@ public sealed class OrganizeViewModel : ObservableObject
             return;
         }
 
-        CustomRules.Add(new CustomRuleItem(NewRuleFolder.Trim(), NewRuleKeywords.Trim(), NewRuleExtensions.Trim()));
+        CustomRules.Add(new CustomRuleItem(
+            NewRuleFolder.Trim(),
+            NewRuleKeywords.Trim(),
+            NewRuleExtensions.Trim(),
+            NewRuleMatchLogic,
+            ParsePositiveInt(NewRuleAgeDaysText)));
         NewRuleFolder = string.Empty;
         NewRuleKeywords = string.Empty;
         NewRuleExtensions = string.Empty;
+        NewRuleAgeDaysText = string.Empty;
 
         SaveCustomRules();
         RebuildPreviewFromScanned();
     }
+
+    private static int? ParsePositiveInt(string? raw)
+        => int.TryParse(raw?.Trim(), out var val) && val > 0 ? val : null;
 
     private void RemoveCustomRule(CustomRuleItem? item)
     {

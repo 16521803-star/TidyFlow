@@ -54,11 +54,16 @@
   - Added `Velopack 1.2.161` + `Services/AppUpdateService.cs` + header `Updates (v0.3.0)` button in `MainViewModel.cs` & `MainWindow.xaml`.
   - Created [.github/workflows/release.yml](file:///d:/Working/workspaces/SmartToolForPC/.github/workflows/release.yml) to build both `TidyFlow-win-x64-portable.exe` and Velopack installer packages on `v*` tags.
   - Updated [README.md](file:///d:/Working/workspaces/SmartToolForPC/README.md) and published standalone `win-x64` executable to `publish/TidyFlow.App.exe` (verified `11/11` unit tests pass).
-- **UI & Rename Destination Update (from user screenshot review):**
+- **UI & Rename Destination Update (from user screenshot review)** — commit `ba12f67`:
   - Added optional `OutputDirectory` to `ListRenameOptions`, `TemplateRenameOptions`, `BatchRenamer`, and `RenameViewModel` (`Save to:` folder picker + `Clear` button in **List Batch Rename**), with `OperationKind.MoveAndRename` support and 2 new unit tests (`13/13` total).
   - Fixed `DataGrid` dark/light theme styling (`PreviewGridStyle` with `DynamicResource` brushes so rows & headers render clearly instead of light grey box) and added `VerticalContentAlignment="Stretch"` + `MinHeight="96"` on the right-side multi-line name list editor.
+- **Phase 4.0 & 4.1 (`v0.4.0` — Branding, Installer, Smart Rules, Duplicate Finder, Space Cleaner):**
+  - Created `assets/logo.png` (512px rounded Fluent icon) and `assets/tidyflow.ico` (16px–256px multi-resolution ICO); embedded via `<ApplicationIcon>` in `TidyFlow.App.csproj`, `MainWindow.xaml` `Icon`, `README.md`, and `vpk pack --icon`.
+  - Added `Program.cs` entry point for `VelopackApp.Build().Run()`, `--runtime win-x64` in `release.yml`, and `scripts/pack-local.ps1` to produce both `publish/TidyFlow.App.exe` and `publish/installer/TidyFlow-win-Setup.exe`.
+  - Extended `KeywordOrganizeRule` & `OrganizeOptions` with `RuleMatchLogic` (`MatchAny` / `MatchAll`) and `MinimumAgeDays`.
+  - Implemented `DuplicateFinder.cs` (size + 4KB prefix + SHA-256) and `SpaceCleaner.cs` (top largest files, subfolder totals, empty folder cleanup) + `RecycleBinService.cs` + `DuplicatesViewModel.cs` + `SpaceCleanerViewModel.cs` + UI tabs (`Duplicate Finder`, `Space Cleaner`).
 
 ### Next Steps
-1. Test `publish\TidyFlow.App.exe` directly on Windows desktop.
-2. Push tag `v0.3.0` (`git tag v0.3.0 && git push origin v0.3.0`) whenever ready to publish the first public GitHub Release.
-3. Optional Phase 4 upgrades: System Tray Watch Folder mode, Explorer context-menu integration, EXIF/PDF smart metadata helpers.
+1. Test `publish\installer\TidyFlow-win-Setup.exe` on Windows (verifying Desktop & Start Menu shortcut icon) or `publish\TidyFlow.App.exe`.
+2. Push tag `v0.4.0` (`git tag v0.4.0 && git push origin v0.4.0`) whenever ready to publish the `v0.4.0` GitHub Release.
+3. Next planned milestone: **Phase 4.2 (`v0.5.0`)** — System Tray Watch Folder, Bulk Image Resizer/Converter, Explorer Context Menu, EXIF Date Renaming.

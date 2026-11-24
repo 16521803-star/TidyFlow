@@ -33,11 +33,23 @@ public sealed class FolderOrganizer
             ? sourceRootDirectory
             : options.TargetRootDirectory;
 
+        var now = DateTimeOffset.Now;
         var proposals = new List<ProposedOperation>(files.Count);
 
         foreach (var file in files)
         {
-            var relativeSubfolder = ResolveSubfolder(file, options);
+            if (options.MinimumAgeDays is > 0 && !MeetsMinimumAge(file, options.MinimumAgeDays.Value, now))
+            {
+                proposals.Add(new ProposedOperation(
+                    file.FullPath,
+                    file.FullPath,
+                    OperationKind.Move,
+                    InitialNote: $"Newer than {options.MinimumAgeDays.Value} day(s).",
+                    ForceSkip: true));
+                continue;
+            }
+
+            var relativeSubfolder = ResolveSubfolder(file, options, now);
             if (relativeSubfolder is null)
             {
                 proposals.Add(new ProposedOperation(
@@ -65,16 +77,16 @@ public sealed class FolderOrganizer
             options.DuplicateBehavior);
     }
 
-    private static string? ResolveSubfolder(FileEntry file, OrganizeOptions options)
+    private static string? ResolveSubfolder(FileEntry file, OrganizeOptions options, DateTimeOffset now)
     {
         return options.Mode switch
         {
             OrganizeMode.ByCategory => FileCategoryRegistry.GetCategory(file.Extension, options.DefaultOtherFolder),
             OrganizeMode.ByDate => FormatDateFolder(file, options),
             OrganizeMode.ByCustomRulesFirstThenCategory =>
-                MatchCustomRule(file, options.CustomRules)
+                MatchCustomRule(file, options.CustomRules, now)
                 ?? FileCategoryRegistry.GetCategory(file.Extension, options.DefaultOtherFolder),
-            OrganizeMode.ByCustomRulesOnly => MatchCustomRule(file, options.CustomRules),
+            OrganizeMode.ByCustomRulesOnly => MatchCustomRule(file, options.CustomRules, now),
             _ => FileCategoryRegistry.GetCategory(file.Extension, options.DefaultOtherFolder)
         };
     }
@@ -91,7 +103,10 @@ public sealed class FolderOrganizer
         };
     }
 
-    private static string? MatchCustomRule(FileEntry file, IReadOnlyList<KeywordOrganizeRule> rules)
+    private static string? MatchCustomRule(
+        FileEntry file,
+        IReadOnlyList<KeywordOrganizeRule> rules,
+        DateTimeOffset now)
     {
         foreach (var rule in rules)
         {
@@ -100,7 +115,15 @@ public sealed class FolderOrganizer
                 continue;
             }
 
-            var extensionMatch = rule.Extensions.Any(ext =>
+            if (rule.MinimumAgeDays is > 0 && !MeetsMinimumAge(file, rule.MinimumAgeDays.Value, now))
+            {
+                continue;
+            }
+
+            var hasExtensions = rule.Extensions.Any(e => !string.IsNullOrWhiteSpace(e));
+            var hasKeywords = rule.Keywords.Any(k => !string.IsNullOrWhiteSpace(k));
+
+            var extensionMatch = hasExtensions && rule.Extensions.Any(ext =>
             {
                 if (string.IsNullOrWhiteSpace(ext))
                 {
@@ -111,11 +134,25 @@ public sealed class FolderOrganizer
                 return string.Equals(file.Extension, normalized, StringComparison.OrdinalIgnoreCase);
             });
 
-            var keywordMatch = rule.Keywords.Any(kw =>
+            var keywordMatch = hasKeywords && rule.Keywords.Any(kw =>
                 !string.IsNullOrWhiteSpace(kw) &&
                 file.NameWithoutExtension.Contains(kw.Trim(), StringComparison.OrdinalIgnoreCase));
 
-            if (extensionMatch || keywordMatch)
+            bool isMatch;
+            if (!hasExtensions && !hasKeywords)
+            {
+                isMatch = rule.MinimumAgeDays is > 0;
+            }
+            else if (rule.MatchLogic == RuleMatchLogic.MatchAll)
+            {
+                isMatch = (!hasExtensions || extensionMatch) && (!hasKeywords || keywordMatch);
+            }
+            else
+            {
+                isMatch = extensionMatch || keywordMatch;
+            }
+
+            if (isMatch)
             {
                 return SanitizeRelativeSubpath(rule.TargetFolderName);
             }
@@ -123,6 +160,9 @@ public sealed class FolderOrganizer
 
         return null;
     }
+
+    private static bool MeetsMinimumAge(FileEntry file, int minimumAgeDays, DateTimeOffset now)
+        => (now - file.LastWriteTime).TotalDays >= minimumAgeDays;
 
     private static string SanitizeRelativeSubpath(string rawFolderPath)
     {

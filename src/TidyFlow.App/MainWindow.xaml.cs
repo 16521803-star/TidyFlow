@@ -160,4 +160,98 @@ public partial class MainWindow : FluentWindow
             ViewModel.Rename.AddPaths(dropped);
         }
     }
+
+    private void BrowseDuplicatesFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select folder to scan for duplicate files",
+            InitialDirectory = Directory.Exists(ViewModel.Duplicates.FolderPath)
+                ? ViewModel.Duplicates.FolderPath
+                : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.Duplicates.FolderPath = dialog.FolderName;
+            ViewModel.Duplicates.ScanAsync();
+        }
+    }
+
+    private void DeleteDuplicateFiles_Click(object sender, RoutedEventArgs e)
+    {
+        var count = ViewModel.Duplicates.CheckedCount;
+        if (count == 0)
+        {
+            return;
+        }
+
+        var confirm = System.Windows.MessageBox.Show(
+            $"Move {count} checked duplicate file(s) to the Windows Recycle Bin?",
+            "Confirm Recycle Bin Move",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning);
+
+        if (confirm == System.Windows.MessageBoxResult.Yes && ViewModel.Duplicates.DeleteCheckedCommand.CanExecute(null))
+        {
+            ViewModel.Duplicates.DeleteCheckedCommand.Execute(null);
+        }
+    }
+
+    private void BrowseSpaceFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select folder to analyze disk usage",
+            InitialDirectory = Directory.Exists(ViewModel.SpaceCleaner.FolderPath)
+                ? ViewModel.SpaceCleaner.FolderPath
+                : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.SpaceCleaner.FolderPath = dialog.FolderName;
+            ViewModel.SpaceCleaner.ScanAsync();
+        }
+    }
+
+    private void DeleteLargeFiles_Click(object sender, RoutedEventArgs e)
+    {
+        var selectedCount = ViewModel.SpaceCleaner.LargestFiles.Count(f => f.IsSelectedForDeletion);
+        if (selectedCount == 0)
+        {
+            return;
+        }
+
+        var confirm = System.Windows.MessageBox.Show(
+            $"Move {selectedCount} selected file(s) to the Windows Recycle Bin?",
+            "Confirm Recycle Bin Move",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning);
+
+        if (confirm == System.Windows.MessageBoxResult.Yes && ViewModel.SpaceCleaner.DeleteSelectedFilesCommand.CanExecute(null))
+        {
+            ViewModel.SpaceCleaner.DeleteSelectedFilesCommand.Execute(null);
+        }
+    }
+
+    private void CleanEmptyFolders_Click(object sender, RoutedEventArgs e)
+    {
+        var count = ViewModel.SpaceCleaner.EmptyFolderCount;
+        if (count == 0)
+        {
+            return;
+        }
+
+        var confirm = System.Windows.MessageBox.Show(
+            $"Remove {count} empty subfolder(s)? Only folders containing zero files will be removed.",
+            "Confirm Empty Folder Cleanup",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Question);
+
+        if (confirm == System.Windows.MessageBoxResult.Yes && ViewModel.SpaceCleaner.CleanEmptyFoldersCommand.CanExecute(null))
+        {
+            ViewModel.SpaceCleaner.CleanEmptyFoldersCommand.Execute(null);
+        }
+    }
 }

@@ -91,4 +91,36 @@ public sealed class FolderOrganizerTests
             Path.Combine(ws.RootPath, "2026-03", "note.txt"),
             plan.Operations.Single().DestinationPath);
     }
+
+    [Fact]
+    public void BuildPlan_MatchAllLogicAndMinimumAge_OnlyMovesMatchingOlderFiles()
+    {
+        using var ws = new TempTestWorkspace();
+        var oldMatch = ws.CreateFile("dincox_clip.mp4", lastWriteTime: DateTime.Now.AddDays(-45));
+        ws.CreateFile("dincox_script.json", lastWriteTime: DateTime.Now.AddDays(-45));
+        ws.CreateFile("other_clip.mp4", lastWriteTime: DateTime.Now.AddDays(-45));
+        ws.CreateFile("dincox_fresh.mp4", lastWriteTime: DateTime.Now.AddDays(-2));
+
+        var files = new FolderScanner().Scan(ws.RootPath);
+        var plan = new FolderOrganizer().BuildPlan(ws.RootPath, files, new OrganizeOptions
+        {
+            Mode = OrganizeMode.ByCustomRulesOnly,
+            CustomRules = new[]
+            {
+                new KeywordOrganizeRule(
+                    "DincoxVideo",
+                    new[] { "dincox" },
+                    new[] { ".mp4", ".jpg" },
+                    RuleMatchLogic.MatchAll,
+                    MinimumAgeDays: 30)
+            }
+        });
+
+        Assert.Equal(1, plan.ReadyCount);
+        Assert.Equal(3, plan.SkippedCount);
+
+        var moved = plan.Operations.Single(o => o.WillModify);
+        Assert.Equal(oldMatch, moved.SourcePath);
+        Assert.Equal(Path.Combine(ws.RootPath, "DincoxVideo", "dincox_clip.mp4"), moved.DestinationPath);
+    }
 }

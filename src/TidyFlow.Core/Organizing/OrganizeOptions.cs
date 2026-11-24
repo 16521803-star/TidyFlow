@@ -17,10 +17,18 @@ public enum DateGroupingFormat
     YearOnly
 }
 
+public enum RuleMatchLogic
+{
+    MatchAny,
+    MatchAll
+}
+
 public sealed record KeywordOrganizeRule(
     string TargetFolderName,
     IReadOnlyList<string> Keywords,
-    IReadOnlyList<string> Extensions);
+    IReadOnlyList<string> Extensions,
+    RuleMatchLogic MatchLogic = RuleMatchLogic.MatchAny,
+    int? MinimumAgeDays = null);
 
 public sealed record OrganizeOptions
 {
@@ -35,6 +43,8 @@ public sealed record OrganizeOptions
     public string DefaultOtherFolder { get; init; } = "Others";
 
     public string? TargetRootDirectory { get; init; }
+
+    public int? MinimumAgeDays { get; init; }
 
     public DuplicateNameBehavior DuplicateBehavior { get; init; } = DuplicateNameBehavior.AutoNumberSuffix;
 }

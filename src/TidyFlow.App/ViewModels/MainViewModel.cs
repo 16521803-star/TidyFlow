@@ -25,6 +25,8 @@ public sealed class MainViewModel : ObservableObject
     {
         Organize = new OrganizeViewModel(_executor, _presetStore, ShowStatus, RefreshUndoState);
         Rename = new RenameViewModel(_executor, _presetStore, ShowStatus, RefreshUndoState);
+        Duplicates = new DuplicatesViewModel(ShowStatus);
+        SpaceCleaner = new SpaceCleanerViewModel(ShowStatus);
 
         UndoLatestCommand = new RelayCommand(UndoLatest, () => CanUndo);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
@@ -37,6 +39,10 @@ public sealed class MainViewModel : ObservableObject
     public OrganizeViewModel Organize { get; }
 
     public RenameViewModel Rename { get; }
+
+    public DuplicatesViewModel Duplicates { get; }
+
+    public SpaceCleanerViewModel SpaceCleaner { get; }
 
     public RelayCommand UndoLatestCommand { get; }
     public RelayCommand ToggleThemeCommand { get; }

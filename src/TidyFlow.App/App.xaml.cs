@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Threading;
-using Velopack;
 
 namespace TidyFlow.App;
 
@@ -9,8 +8,6 @@ public partial class App : Application
 {
     private void App_OnStartup(object sender, StartupEventArgs e)
     {
-        VelopackApp.Build().Run();
-
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 

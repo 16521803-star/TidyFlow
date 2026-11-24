@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (without v prefix, e.g. 0.3.0)'
+        description: 'Release version (without v prefix, e.g. 0.4.0)'
         required: true
-        default: '0.3.0'
+        default: '0.4.0'
 
 permissions:
   contents: write
@@ -63,9 +63,12 @@ jobs:
             -o artifacts/velopack-src
           vpk pack `
             --packId TidyFlow `
+            --packTitle "TidyFlow" `
             --packVersion ${{ steps.ver.outputs.version }} `
+            --runtime win-x64 `
             --packDir artifacts/velopack-src `
             --mainExe TidyFlow.App.exe `
+            --icon assets/tidyflow.ico `
             --outputDir artifacts/releases
 
       - name: Publish GitHub Release

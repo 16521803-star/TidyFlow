@@ -81,10 +81,37 @@ TidyFlow/
 - [x] Add GitHub Actions Release workflow (`.github/workflows/release.yml`) triggered on `v*` tags (builds portable single-file `.exe` + Velopack `vpk pack` installer)
 - [x] Write user-facing `README.md` with download guide, build steps, and release tag instructions
 
-### Phase 4 — Future Upgrades (Post-v1.0)
-- [ ] Optional **Watch Folder** mode (System Tray background auto-tidy for `Downloads`)
-- [ ] Windows Explorer context-menu integration (*"Send to TidyFlow"*)
-- [ ] Smart metadata helpers (EXIF photo dates, PDF title extraction)
+### Phase 4 — Branding, Installer Polish & High-Demand Windows Utilities
+
+#### 4.0 Branding & Native Windows Installer Polish (Next Immediate Step)
+- [x] **App Logo & Multi-Size Icon (`assets/tidyflow.ico`, `assets/logo.png`):** Design a clean Fluent-style TidyFlow icon (16px–256px)
+- [x] **Embed Icon Everywhere:**
+  - Set `<ApplicationIcon>` in `TidyFlow.App.csproj` (for `.exe` Explorer icon, taskbar, and Alt+Tab)
+  - Set `Icon` in `MainWindow.xaml` and add logo badge in `README.md`
+  - Pass `--icon` and `--packTitle "TidyFlow"` to `vpk pack` in `.github/workflows/release.yml` so the **Setup Installer** creates proper Desktop & Start Menu shortcuts with the TidyFlow icon
+- [x] **Local Installer Script:** Add a helper script (`scripts/pack-local.ps1`) to build both `Setup.exe` and portable `.exe` locally for testing
+
+#### 4.1 `v0.4.0` — Smart Rules, Duplicate Finder & Space Cleaner
+- [x] **Advanced Organize Rules:**
+  - Add `Match All (AND)` vs `Match Any (OR)` toggle per custom rule (e.g., filename contains `dincox` **AND** extension is `.mp4`/`.jpg`)
+  - Add file age filter (`Older than N days`, e.g., archive `Downloads` older than 30 days)
+- [x] **Duplicate File Finder (`TidyFlow.Core` + UI Tab):**
+  - Fast 2-stage scan: group by file size first, then compute **SHA-256** content hash
+  - Preview duplicate groups with quick selection (*Keep Oldest* / *Keep Newest* / *Manual*)
+  - Safe deletion via **Windows Recycle Bin** (`Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile` with `RecycleOption.SendToRecycleBin`) instead of permanent delete
+- [x] **Space & Clutter Cleaner (`TidyFlow.Core` + UI Tab):**
+  - Scan top largest files/folders (spot forgotten `.iso`, `.zip`, `.exe`, large videos)
+  - Find and safely remove empty subfolders (preview list before deleting)
+
+#### 4.2 `v0.5.0` — Automation, Media & Explorer Integration
+- [ ] **System Tray Watch Folder:** Optional background monitor for `Downloads` that auto-organizes newly finished downloads (ignoring `.crdownload`/`.part`/`.tmp`) with Undo logging
+- [ ] **Bulk Image Resizer & Converter:** Resize by width/percentage and convert between `PNG`, `JPG`, `WEBP` into a target output folder
+- [ ] **Windows Explorer Context Menu:** Right-click files/folders $\rightarrow$ *"Organize / Batch Rename with TidyFlow"* (user-space `HKCU\Software\Classes` registration toggle in Settings—no admin required)
+- [ ] **EXIF Date Renaming:** Read real camera `Date Taken` from photos for accurate `{exif_date}` renaming & `ByDate` grouping
+
+#### 4.3 `v0.6.0` — Smart OCR & Optional AI Organization
+- [ ] **Windows Native OCR Rename Helper:** Use built-in `Windows.Media.Ocr` (zero external model download) to extract text from screenshots/scanned docs for filename suggestions
+- [ ] **Optional Natural-Language AI Organize:** Local Ollama or user-provided API key to propose folder structures from plain-English prompts — always routed through Dry-Run Preview & Undo
 
 ---
 

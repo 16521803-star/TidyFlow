@@ -9,17 +9,23 @@
     <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="..\..\assets\tidyflow.ico" Link="Assets\tidyflow.ico" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <Version>0.3.0</Version>
+    <StartupObject>TidyFlow.App.Program</StartupObject>
+    <ApplicationIcon>..\..\assets\tidyflow.ico</ApplicationIcon>
+    <Version>0.4.0</Version>
     <AssemblyTitle>TidyFlow</AssemblyTitle>
     <Product>TidyFlow</Product>
     <Authors>Thang Huynh</Authors>
-    <Description>Smart Windows folder organizer and list-based batch file renamer</Description>
+    <Description>Smart Windows folder organizer, list-based batch renamer, duplicate finder, and space cleaner</Description>
   </PropertyGroup>
 
 </Project>
