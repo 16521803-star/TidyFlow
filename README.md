@@ -68,6 +68,17 @@ dotnet tool install -g vpk
 .\scripts\pack-local.ps1 -Version 0.7.0
 ```
 
+### Build Microsoft Store `.msix` Package (No Visual Studio Required)
+After reserving your app in **Microsoft Partner Center**, pass your assigned `Package/Identity/Name` and `Publisher` to `pack-msix.ps1`:
+```powershell
+.\scripts\pack-msix.ps1 `
+  -Version 0.7.0 `
+  -PackageName "YourPartnerCenterId.TidyFlow" `
+  -Publisher "CN=YOUR-PARTNER-CENTER-PUBLISHER-GUID" `
+  -PublisherDisplayName "Thang Huynh"
+```
+This outputs `publish/msix/TidyFlow-0.7.0-x64.msix` ready to upload to Partner Center (alongside `PRIVACY.md` and `packaging/store-listings/Logo300x300.png` / `Logo1000x1000.png`).
+
 ### Creating a New GitHub Release
 Push a version tag matching `v*` to trigger [release.yml](.github/workflows/release.yml):
 ```powershell

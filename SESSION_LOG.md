@@ -67,10 +67,13 @@
   - Added `WindowsOcrService.cs`, `OcrNameSuggester.cs`, `AiOrganizePlanner.cs`, `AiSettingsStore.cs`, `SmartAiViewModel.cs`, and **Tab 7 (`Smart OCR & AI`)**.
 - **`v0.6.1` Fixes & Image Resizer Upgrades** — commit `5e727c2` (tag `v0.6.1` pushed):
   - Added `CropToExact` & `ExactStretch` modes, labeled UI controls, `Apply Smart Plan` fix, and instruction stopwords filtering.
-- **`v0.7.0` Multi-Language UI (English / Tiếng Việt / 日本語) & About Dialog:**
-  - Added `LocalizationService.cs` + `Resources/Strings.en.xaml`, `Strings.vi.xaml`, `Strings.ja.xaml` with live switching, friendly enum dropdown translations (`LocalizedOption<T>`), and saved language preference in `%LocalAppData%\TidyFlow\app_settings.json`.
-  - Added `AboutWindow.xaml` & `AboutWindow.xaml.cs` (TidyFlow logo, version, author/MIT license, localized quick feature guide, GitHub/Releases/Undo History links) + `15s` timeout on `AppUpdateService.CheckAndDownloadAsync()` so `Checking...` never hangs indefinitely.
+- **`v0.7.0` Multi-Language UI & About Dialog** — commit `dadbcc1` (tag `v0.7.0` pushed):
+  - Added `LocalizationService.cs`, `Strings.en/vi/ja.xaml`, `AboutWindow.xaml`, and `15s` update check timeout.
+- **Microsoft Store Packaging & Privacy Policy (`MSIX`):**
+  - Added [PRIVACY.md](file:///d:/Working/workspaces/SmartToolForPC/PRIVACY.md) for Store submission compliance.
+  - Generated MSIX tile assets (`packaging/msix/Assets/*`) and Partner Center listing logos (`packaging/store-listings/Logo300x300.png`, `Logo1000x1000.png`).
+  - Added `packaging/msix/AppxManifest.template.xml`, `SdkTools.csproj`, and `scripts/pack-msix.ps1` using `makeappx.exe` (`Microsoft.Windows.SDK.BuildTools`); verified output `publish/msix/TidyFlow-0.7.0-x64.msix` (`~77.3 MB`).
 
 ### Next Steps
-1. Test `v0.7.0` installer (`publish\installer\TidyFlow-win-Setup.exe`) or portable `.exe` (`publish\TidyFlow.App.exe`) and verify instant switching across **English / Tiếng Việt / 日本語** and the **About** dialog.
-2. Push tag `v0.7.0` (`git tag v0.7.0 && git push origin v0.7.0`) when ready for GitHub Releases.
+1. Register/verify account at `https://storedeveloper.microsoft.com` and reserve app name in Partner Center.
+2. Re-run `.\scripts\pack-msix.ps1` with the exact Partner Center `PackageName` and `Publisher` GUID, then upload `TidyFlow-0.7.0-x64.msix` + Store logos + `PRIVACY.md` link.
