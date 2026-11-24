@@ -21,6 +21,7 @@
 - **Background Watch Folder & Explorer Menu:** Minimize to System Tray to auto-organize newly downloaded files, plus 1-click per-user Windows Explorer right-click integration (`--organize` / `--rename`).
 - **Smart OCR & AI Organize:** Extract text from screenshots/documents via built-in **Windows Native OCR** to suggest filenames (`OCR Suggest`), and organize folders with plain-English prompts (offline heuristic or local Ollama / OpenAI-compatible API) — always previewed and 1-click Undoable.
 - **Live Preview & 1-Click Undo:** Inspect every `Current -> New` change before applying, with persistent JSON transaction rollback for moves & renames.
+- **Multi-Language UI & About Guide:** Instant switching between **English**, **Tiếng Việt**, and **日本語** (persisted automatically), plus a built-in **About / Info** dialog with quick feature guide and GitHub links.
 - **Auto-Updates:** Built-in updates via GitHub Releases powered by **Velopack**.
 
 ---
@@ -64,14 +65,14 @@ dotnet run --project src/TidyFlow.App
 ### Publish Portable `.exe` & Windows Installer Locally
 ```powershell
 dotnet tool install -g vpk
-.\scripts\pack-local.ps1 -Version 0.6.1
+.\scripts\pack-local.ps1 -Version 0.7.0
 ```
 
 ### Creating a New GitHub Release
 Push a version tag matching `v*` to trigger [release.yml](.github/workflows/release.yml):
 ```powershell
-git tag v0.6.1
-git push origin v0.6.1
+git tag v0.7.0
+git push origin v0.7.0
 ```
 
 ---

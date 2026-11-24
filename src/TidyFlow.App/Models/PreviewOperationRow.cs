@@ -1,4 +1,5 @@
 using System.IO;
+using TidyFlow.App.Services;
 using TidyFlow.Core.Models;
 
 namespace TidyFlow.App.Models;
@@ -11,6 +12,20 @@ public sealed record PreviewOperationRow(
     string TargetDisplay,
     string Note)
 {
+    public static string LocalizeStatus(OperationStatus status)
+    {
+        var loc = LocalizationService.Instance;
+        return status switch
+        {
+            OperationStatus.Ready => loc.Get("Str_StatusReady", "Ready"),
+            OperationStatus.ConflictResolved => loc.Get("Str_StatusAutoNumbered", "Auto-Numbered"),
+            OperationStatus.Skipped => loc.Get("Str_StatusSkipped", "Skipped"),
+            OperationStatus.Warning => loc.Get("Str_StatusWarning", "Warning"),
+            OperationStatus.Error => loc.Get("Str_StatusErr", "Error"),
+            _ => status.ToString()
+        };
+    }
+
     public static PreviewOperationRow FromPlanned(
         int index,
         PlannedFileOperation op,
@@ -22,19 +37,9 @@ public sealed record PreviewOperationRow(
                 ? op.DestinationName
                 : Path.GetRelativePath(baseDirectoryForRelativeTarget, op.DestinationPath);
 
-        var statusText = op.Status switch
-        {
-            OperationStatus.Ready => "Ready",
-            OperationStatus.ConflictResolved => "Auto-Numbered",
-            OperationStatus.Skipped => "Skipped",
-            OperationStatus.Warning => "Warning",
-            OperationStatus.Error => "Error",
-            _ => op.Status.ToString()
-        };
-
         return new PreviewOperationRow(
             index,
-            statusText,
+            LocalizeStatus(op.Status),
             op.Status,
             op.SourceName,
             targetDisplay,

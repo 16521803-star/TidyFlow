@@ -1,0 +1,197 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Header & Common -->
+    <sys:String x:Key="Str_AppTitle">TidyFlow — Smart Folder Organizer &amp; List Renamer</sys:String>
+    <sys:String x:Key="Str_UndoLast">Undo Last</sys:String>
+    <sys:String x:Key="Str_UndoCount">Undo ({0})</sys:String>
+    <sys:String x:Key="Str_UpdatesFmt">Updates ({0})</sys:String>
+    <sys:String x:Key="Str_CheckingUpdates">Checking...</sys:String>
+    <sys:String x:Key="Str_LightMode">Light Mode</sys:String>
+    <sys:String x:Key="Str_DarkMode">Dark Mode</sys:String>
+    <sys:String x:Key="Str_Downloads">Downloads</sys:String>
+    <sys:String x:Key="Str_Browse">Browse...</sys:String>
+    <sys:String x:Key="Str_Clear">Clear</sys:String>
+    <sys:String x:Key="Str_Remove">Remove</sys:String>
+    <sys:String x:Key="Str_Save">Save</sys:String>
+    <sys:String x:Key="Str_Del">Del</sys:String>
+    <sys:String x:Key="Str_Add">Add</sys:String>
+    <sys:String x:Key="Str_SaveTo">Save to:</sys:String>
+    <sys:String x:Key="Str_IncludeSubdirs">Include subdirectories</sys:String>
+    <sys:String x:Key="Str_StatusCompleted">Completed</sys:String>
+    <sys:String x:Key="Str_StatusError">Action Required</sys:String>
+
+    <!-- Status Badges & Grid Headers -->
+    <sys:String x:Key="Str_ColIndex">#</sys:String>
+    <sys:String x:Key="Str_ColStatus">Status</sys:String>
+    <sys:String x:Key="Str_ColSourceFile">Source File</sys:String>
+    <sys:String x:Key="Str_ColDestRelative">Destination (Relative)</sys:String>
+    <sys:String x:Key="Str_ColNote">Note</sys:String>
+    <sys:String x:Key="Str_ColOrigName">Original Name</sys:String>
+    <sys:String x:Key="Str_ColNewName">New Name (Live Preview)</sys:String>
+    <sys:String x:Key="Str_StatusReady">Ready</sys:String>
+    <sys:String x:Key="Str_StatusAutoNumbered">Auto-Numbered</sys:String>
+    <sys:String x:Key="Str_StatusSkipped">Skipped</sys:String>
+    <sys:String x:Key="Str_StatusWarning">Warning</sys:String>
+    <sys:String x:Key="Str_StatusErr">Error</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_TabOrganize">Organize Folder</sys:String>
+    <sys:String x:Key="Str_TabRename">List Batch Rename</sys:String>
+    <sys:String x:Key="Str_TabDuplicates">Duplicate Finder</sys:String>
+    <sys:String x:Key="Str_TabSpace">Space Cleaner</sys:String>
+    <sys:String x:Key="Str_TabImage">Image Resizer</sys:String>
+    <sys:String x:Key="Str_TabAutomation">Automation &amp; Tools</sys:String>
+    <sys:String x:Key="Str_TabSmartAi">Smart OCR &amp; AI</sys:String>
+
+    <!-- Tab 1: Organize Folder -->
+    <sys:String x:Key="Str_TargetFolder">Target Folder:</sys:String>
+    <sys:String x:Key="Str_TargetFolderHint">Choose or drop a folder here (e.g. Downloads)</sys:String>
+    <sys:String x:Key="Str_ScanAndPreview">Scan &amp; Preview</sys:String>
+    <sys:String x:Key="Str_GroupingOptions">Grouping Options</sys:String>
+    <sys:String x:Key="Str_ModeLabel">Mode:</sys:String>
+    <sys:String x:Key="Str_DateFormatLabel">Date Format:</sys:String>
+    <sys:String x:Key="Str_UseExifDate">Use EXIF Date Taken for photos when available</sys:String>
+    <sys:String x:Key="Str_MinAgeDays">Min Age (days):</sys:String>
+    <sys:String x:Key="Str_MinAgeHint">Optional (e.g. 30 to move older files only)</sys:String>
+    <sys:String x:Key="Str_IgnoreActiveDownloads">Ignore active browser downloads (.crdownload, .part, .tmp)</sys:String>
+    <sys:String x:Key="Str_CustomRulesTitle">Custom Rules (Saved Automatically)</sys:String>
+    <sys:String x:Key="Str_RuleFolderHint">Folder</sys:String>
+    <sys:String x:Key="Str_RuleKeywordsHint">Keywords</sys:String>
+    <sys:String x:Key="Str_RuleExtHint">Ext (.mp4)</sys:String>
+    <sys:String x:Key="Str_RuleDaysHint">Days</sys:String>
+    <sys:String x:Key="Str_ApplyOrganize">Apply Organize</sys:String>
+    <sys:String x:Key="Str_OrganizeInitialHint">Select a folder (e.g. Downloads) and click Scan &amp; Preview.</sys:String>
+    <sys:String x:Key="Str_OrganizeFolderMissing">Folder not found. Choose an existing directory.</sys:String>
+    <sys:String x:Key="Str_OrganizeSummaryFmt">Scanned {0} file(s) · Ready: {1} · Auto-Numbered: {2} · Skipped: {3}</sys:String>
+
+    <!-- Tab 2: List Batch Rename -->
+    <sys:String x:Key="Str_RenameSelectHeader">1. Selected Files (Drag &amp; Drop from Explorer or Add)</sys:String>
+    <sys:String x:Key="Str_AddFiles">Add Files...</sys:String>
+    <sys:String x:Key="Str_FromFolder">From Folder...</sys:String>
+    <sys:String x:Key="Str_MoveUp">Move Up</sys:String>
+    <sys:String x:Key="Str_MoveDown">Move Down</sys:String>
+    <sys:String x:Key="Str_SortAZ">Sort A-Z</sys:String>
+    <sys:String x:Key="Str_SortDate">Sort Date</sys:String>
+    <sys:String x:Key="Str_RenameFromList">Rename from List</sys:String>
+    <sys:String x:Key="Str_QuickTemplate">Quick Template</sys:String>
+    <sys:String x:Key="Str_OcrSuggest">OCR Suggest</sys:String>
+    <sys:String x:Key="Str_PasteClipboard">Paste Clipboard</sys:String>
+    <sys:String x:Key="Str_SaveListAs">Save list as...</sys:String>
+    <sys:String x:Key="Str_PatternLabel">Pattern ({index}, {name}, {date}, {exif_date}, {ext}):</sys:String>
+    <sys:String x:Key="Str_FindText">Find Text:</sys:String>
+    <sys:String x:Key="Str_ReplaceWith">Replace With:</sys:String>
+    <sys:String x:Key="Str_KeepExt">Keep original extension</sys:String>
+    <sys:String x:Key="Str_CleanDuplicates">Clean (1) / Copy of</sys:String>
+    <sys:String x:Key="Str_PrefixHint">Prefix</sys:String>
+    <sys:String x:Key="Str_SuffixHint">Suffix</sys:String>
+    <sys:String x:Key="Str_OutputFolderHint">Same folder (optional: pick output folder...)</sys:String>
+    <sys:String x:Key="Str_ApplyRename">Apply Rename</sys:String>
+    <sys:String x:Key="Str_RenameInitialHint">Add files (or drag &amp; drop from Explorer) and paste a list of names to preview.</sys:String>
+    <sys:String x:Key="Str_ParsedListCountFmt">{0} name(s) in list · {1} file(s) selected</sys:String>
+    <sys:String x:Key="Str_RenameSummaryFmt">Files: {0} · Ready: {1} · Auto-Numbered: {2} · Skipped: {3} · Errors: {4}</sys:String>
+
+    <!-- Tab 3: Duplicate Finder -->
+    <sys:String x:Key="Str_ScanFolder">Scan Folder:</sys:String>
+    <sys:String x:Key="Str_ScanDuplicates">Scan Duplicates</sys:String>
+    <sys:String x:Key="Str_KeepOldest">Keep Oldest</sys:String>
+    <sys:String x:Key="Str_KeepNewest">Keep Newest</sys:String>
+    <sys:String x:Key="Str_UncheckAll">Uncheck All</sys:String>
+    <sys:String x:Key="Str_ColTrash">Trash</sys:String>
+    <sys:String x:Key="Str_ColGroup">Group</sys:String>
+    <sys:String x:Key="Str_ColSize">Size</sys:String>
+    <sys:String x:Key="Str_ColFileName">File Name</sys:String>
+    <sys:String x:Key="Str_ColModified">Modified</sys:String>
+    <sys:String x:Key="Str_ColFolder">Folder</sys:String>
+    <sys:String x:Key="Str_MoveCheckedRecycle">Move Checked to Recycle Bin</sys:String>
+    <sys:String x:Key="Str_DupInitialHint">Choose a folder and click Scan Duplicates to find identical files (SHA-256).</sys:String>
+
+    <!-- Tab 4: Space Cleaner -->
+    <sys:String x:Key="Str_AnalyzeFolder">Analyze Folder:</sys:String>
+    <sys:String x:Key="Str_ScanSpace">Scan Space</sys:String>
+    <sys:String x:Key="Str_LargestFilesTitle">Largest Files (Top 100)</sys:String>
+    <sys:String x:Key="Str_SubfolderUsageTitle">Subfolder Usage</sys:String>
+    <sys:String x:Key="Str_ColFiles">Files</sys:String>
+    <sys:String x:Key="Str_EmptyFoldersFmt">Empty Folders ({0})</sys:String>
+    <sys:String x:Key="Str_CleanEmpty">Clean Empty</sys:String>
+    <sys:String x:Key="Str_MoveSelectedRecycle">Move Selected Files to Recycle Bin</sys:String>
+    <sys:String x:Key="Str_SpaceInitialHint">Scan a folder to find largest files, heavy subfolders, and empty directories.</sys:String>
+
+    <!-- Tab 5: Image Resizer -->
+    <sys:String x:Key="Str_ImageHeaderHint">Drag &amp; drop images here (JPG, PNG, BMP, TIFF) or load files:</sys:String>
+    <sys:String x:Key="Str_AddImages">Add Images...</sys:String>
+    <sys:String x:Key="Str_ResizeMode">Resize Mode</sys:String>
+    <sys:String x:Key="Str_WidthPx">Width (px)</sys:String>
+    <sys:String x:Key="Str_HeightPx">Height (px)</sys:String>
+    <sys:String x:Key="Str_ScalePct">Scale (%)</sys:String>
+    <sys:String x:Key="Str_Format">Format</sys:String>
+    <sys:String x:Key="Str_SuffixLabel">Suffix</sys:String>
+    <sys:String x:Key="Str_DoNotUpscale">Do not upscale smaller images</sys:String>
+    <sys:String x:Key="Str_ColSourceImage">Source Image</sys:String>
+    <sys:String x:Key="Str_ColOutputFile">Output File</sys:String>
+    <sys:String x:Key="Str_ColOperation">Operation</sys:String>
+    <sys:String x:Key="Str_ApplyImages">Resize / Convert Images</sys:String>
+    <sys:String x:Key="Str_ImageInitialHint">Add or drop images (JPG, PNG, BMP, TIFF) to resize or convert.</sys:String>
+
+    <!-- Tab 6: Automation & Tools -->
+    <sys:String x:Key="Str_WatchTitle">Background Watch Folder (System Tray)</sys:String>
+    <sys:String x:Key="Str_FolderLabel">Folder:</sys:String>
+    <sys:String x:Key="Str_StartWatch">Start Watch Folder</sys:String>
+    <sys:String x:Key="Str_StopWatch">Stop Watch Folder</sys:String>
+    <sys:String x:Key="Str_MinimizeOnClose">Minimize to System Tray when closing window while Watch Folder is active</sys:String>
+    <sys:String x:Key="Str_MinimizeNow">Minimize to Tray Now</sys:String>
+    <sys:String x:Key="Str_ExplorerTitle">Windows Explorer Right-Click Integration</sys:String>
+    <sys:String x:Key="Str_AddExplorerMenu">Add Explorer Right-Click Menu</sys:String>
+    <sys:String x:Key="Str_RemoveExplorerMenu">Remove Explorer Context Menu</sys:String>
+    <sys:String x:Key="Str_WatchLogTitle">Watch Folder Activity Log</sys:String>
+    <sys:String x:Key="Str_ClearLog">Clear Log</sys:String>
+
+    <!-- Tab 7: Smart OCR & AI -->
+    <sys:String x:Key="Str_PreviewSmartPlan">Preview Smart Plan</sys:String>
+    <sys:String x:Key="Str_InstructionLabel">Instruction:</sys:String>
+    <sys:String x:Key="Str_InstructionHint">e.g. Group invoices into Finance, videos into Media, and Dincox files into Dincox</sys:String>
+    <sys:String x:Key="Str_UseExternalAi">Use External AI / Local Ollama Endpoint (uncheck for 100% offline keyword + snippet sort)</sys:String>
+    <sys:String x:Key="Str_OcrInspectorTitle">Windows Native OCR Inspector</sys:String>
+    <sys:String x:Key="Str_ExtractImageText">Extract Image Text...</sys:String>
+    <sys:String x:Key="Str_ColProposedDest">Proposed Destination</sys:String>
+    <sys:String x:Key="Str_ColReason">Reason</sys:String>
+    <sys:String x:Key="Str_ApplySmartPlan">Apply Smart Plan</sys:String>
+    <sys:String x:Key="Str_SmartInitialHint">Enter an instruction and click Preview Smart Plan (works offline or with Ollama/OpenAI API).</sys:String>
+
+    <!-- Enum Friendly Display Strings -->
+    <sys:String x:Key="Str_Enum_ByCategory">By Category (File Type)</sys:String>
+    <sys:String x:Key="Str_Enum_ByDate">By Date</sys:String>
+    <sys:String x:Key="Str_Enum_ByCustomRulesFirstThenCategory">Custom Rules First -&gt; Category</sys:String>
+    <sys:String x:Key="Str_Enum_ByCustomRulesOnly">Custom Rules Only</sys:String>
+    <sys:String x:Key="Str_Enum_MatchAny">Match Any (OR)</sys:String>
+    <sys:String x:Key="Str_Enum_MatchAll">Match All (AND)</sys:String>
+    <sys:String x:Key="Str_Enum_SkipExtraFiles">Skip extra files</sys:String>
+    <sys:String x:Key="Str_Enum_PadWithOriginalNameAndIndex">Pad with index + original</sys:String>
+    <sys:String x:Key="Str_Enum_PadWithPrefixAndIndex">Pad with prefix + index</sys:String>
+    <sys:String x:Key="Str_Enum_MaxWidth">Max Width (keep aspect)</sys:String>
+    <sys:String x:Key="Str_Enum_MaxHeight">Max Height (keep aspect)</sys:String>
+    <sys:String x:Key="Str_Enum_FitWithinBox">Fit Within Box (keep aspect)</sys:String>
+    <sys:String x:Key="Str_Enum_Percentage">Scale by Percentage (%)</sys:String>
+    <sys:String x:Key="Str_Enum_CropToExact">Crop Center to Exact WxH</sys:String>
+    <sys:String x:Key="Str_Enum_ExactStretch">Stretch to Exact WxH</sys:String>
+
+    <!-- About Dialog -->
+    <sys:String x:Key="Str_AboutButton">About</sys:String>
+    <sys:String x:Key="Str_AboutTitle">About TidyFlow</sys:String>
+    <sys:String x:Key="Str_AboutTagline">Smart Windows file organizer, list-based batch renamer, duplicate finder, disk cleaner, image resizer, and folder watcher.</sys:String>
+    <sys:String x:Key="Str_AboutAuthor">Author: Thang Huynh · License: MIT Open Source</sys:String>
+    <sys:String x:Key="Str_AboutGuideTitle">Quick Feature Guide</sys:String>
+    <sys:String x:Key="Str_AboutGuideBody">• Organize Folder: Sort Downloads or any folder by Type, Date (EXIF), or custom AND/OR rules.
+• List Batch Rename: Paste a custom list of names, reorder files, or use Windows OCR Suggest.
+• Duplicate Finder: Scan identical files via SHA-256 and move duplicates safely to Recycle Bin.
+• Space Cleaner: Inspect largest files, subfolder usage, and remove empty folders.
+• Image Resizer: Resize (fit, center-crop, stretch, %) or convert JPG/PNG/BMP/TIFF in bulk.
+• Automation &amp; Tools: Background Watch Folder in System Tray &amp; Explorer right-click menu.
+• Smart OCR &amp; AI: Extract text from images or organize folders using plain-English instructions.</sys:String>
+    <sys:String x:Key="Str_OpenGitHub">GitHub Repo</sys:String>
+    <sys:String x:Key="Str_OpenReleases">Releases</sys:String>
+    <sys:String x:Key="Str_OpenHistory">Undo History Folder</sys:String>
+    <sys:String x:Key="Str_Close">Close</sys:String>
+
+</ResourceDictionary>

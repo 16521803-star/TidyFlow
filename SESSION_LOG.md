@@ -65,11 +65,12 @@
   - App (`TidyFlow.App`): Added `ImageResizerService.cs`, `ExplorerContextMenuService.cs`, `TrayIconService.cs`, `ImageResizerViewModel.cs`, `AutomationViewModel.cs`, and UI tabs (`Image Resizer`, `Automation & Tools`).
 - **Phase 4.3 (`v0.6.0`)** — commit `af7eda9` (tag `v0.6.0` pushed):
   - Added `WindowsOcrService.cs`, `OcrNameSuggester.cs`, `AiOrganizePlanner.cs`, `AiSettingsStore.cs`, `SmartAiViewModel.cs`, and **Tab 7 (`Smart OCR & AI`)**.
-- **`v0.6.1` Fixes & Image Resizer Upgrades (from user screenshots):**
-  - Added `ImageResizeMode.CropToExact` (center crop to exact `W x H` without distortion) and `ImageResizeMode.ExactStretch` in `ImageResizePlanner.cs` & `ImageResizerService.cs`.
-  - Labeled `Resize Mode`, `Width (px)`, `Height (px)`, `Scale (%)`, `Format`, `Suffix` in `MainWindow.xaml` and disabled inapplicable inputs per mode; added `RebuildPreview()` after `ApplyAsync()` and fixed `DataGridCell` foreground inheritance + `Status` column width (`130px`).
-  - Fixed `Apply Smart Plan` button staying disabled (`IsBusy` now notifies `CanApply` in `SmartAiViewModel.cs`) and added instruction stopwords in `AiOrganizePlanner.BuildOfflineSmartPlan` so words like `"and"` or `"into"` are never treated as target folder names.
+- **`v0.6.1` Fixes & Image Resizer Upgrades** — commit `5e727c2` (tag `v0.6.1` pushed):
+  - Added `CropToExact` & `ExactStretch` modes, labeled UI controls, `Apply Smart Plan` fix, and instruction stopwords filtering.
+- **`v0.7.0` Multi-Language UI (English / Tiếng Việt / 日本語) & About Dialog:**
+  - Added `LocalizationService.cs` + `Resources/Strings.en.xaml`, `Strings.vi.xaml`, `Strings.ja.xaml` with live switching, friendly enum dropdown translations (`LocalizedOption<T>`), and saved language preference in `%LocalAppData%\TidyFlow\app_settings.json`.
+  - Added `AboutWindow.xaml` & `AboutWindow.xaml.cs` (TidyFlow logo, version, author/MIT license, localized quick feature guide, GitHub/Releases/Undo History links) + `15s` timeout on `AppUpdateService.CheckAndDownloadAsync()` so `Checking...` never hangs indefinitely.
 
 ### Next Steps
-1. Test `v0.6.1` installer (`publish\installer\TidyFlow-win-Setup.exe`) or portable `.exe` (`publish\TidyFlow.App.exe`).
-2. Push `v0.6.1` tag if ready to update GitHub Releases (`git tag v0.6.1 && git push origin v0.6.1`).
+1. Test `v0.7.0` installer (`publish\installer\TidyFlow-win-Setup.exe`) or portable `.exe` (`publish\TidyFlow.App.exe`) and verify instant switching across **English / Tiếng Việt / 日本語** and the **About** dialog.
+2. Push tag `v0.7.0` (`git tag v0.7.0 && git push origin v0.7.0`) when ready for GitHub Releases.

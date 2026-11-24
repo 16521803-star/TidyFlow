@@ -42,6 +42,22 @@ public sealed class ImageResizerViewModel : ObservableObject
 
     public IReadOnlyList<ImageResizeMode> AvailableModes { get; } = Enum.GetValues<ImageResizeMode>();
 
+    public IReadOnlyList<LocalizedOption<ImageResizeMode>> AvailableModeOptions => new[]
+    {
+        new LocalizedOption<ImageResizeMode>(ImageResizeMode.MaxWidth, LocalizationService.Instance.Get("Str_Enum_MaxWidth")),
+        new LocalizedOption<ImageResizeMode>(ImageResizeMode.MaxHeight, LocalizationService.Instance.Get("Str_Enum_MaxHeight")),
+        new LocalizedOption<ImageResizeMode>(ImageResizeMode.FitWithinBox, LocalizationService.Instance.Get("Str_Enum_FitWithinBox")),
+        new LocalizedOption<ImageResizeMode>(ImageResizeMode.Percentage, LocalizationService.Instance.Get("Str_Enum_Percentage")),
+        new LocalizedOption<ImageResizeMode>(ImageResizeMode.CropToExact, LocalizationService.Instance.Get("Str_Enum_CropToExact")),
+        new LocalizedOption<ImageResizeMode>(ImageResizeMode.ExactStretch, LocalizationService.Instance.Get("Str_Enum_ExactStretch"))
+    };
+
+    public void RefreshLocalization()
+    {
+        OnPropertyChanged(nameof(AvailableModeOptions));
+        RebuildPreview();
+    }
+
     public IReadOnlyList<ImageOutputFormat> AvailableFormats { get; } = Enum.GetValues<ImageOutputFormat>();
 
     public RelayCommand ClearFilesCommand { get; }
@@ -242,15 +258,7 @@ public sealed class ImageResizerViewModel : ObservableObject
                 ? Path.GetFileName(op.DestinationPath)
                 : $"{Path.GetFileName(Path.GetDirectoryName(op.DestinationPath))}\\{Path.GetFileName(op.DestinationPath)}";
 
-            var statusText = op.Status switch
-            {
-                OperationStatus.Ready => "Ready",
-                OperationStatus.ConflictResolved => "Auto-Numbered",
-                OperationStatus.Skipped => "Skipped",
-                OperationStatus.Warning => "Warning",
-                OperationStatus.Error => "Error",
-                _ => op.Status.ToString()
-            };
+            var statusText = PreviewOperationRow.LocalizeStatus(op.Status);
 
             PreviewRows.Add(new PreviewOperationRow(
                 i + 1,

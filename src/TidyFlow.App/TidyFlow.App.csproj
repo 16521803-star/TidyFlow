@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Resource Include="..\..\assets\tidyflow.ico" Link="Assets\tidyflow.ico" />
+    <Resource Include="..\..\assets\logo.png" Link="Assets\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +28,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>TidyFlow.App.Program</StartupObject>
     <ApplicationIcon>..\..\assets\tidyflow.ico</ApplicationIcon>
-    <Version>0.6.1</Version>
+    <Version>0.7.0</Version>
     <AssemblyTitle>TidyFlow</AssemblyTitle>
     <Product>TidyFlow</Product>
     <Authors>Thang Huynh</Authors>

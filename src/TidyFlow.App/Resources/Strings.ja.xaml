@@ -1,0 +1,197 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Header & Common -->
+    <sys:String x:Key="Str_AppTitle">TidyFlow — フォルダ整理 &amp; 一括リネームツール</sys:String>
+    <sys:String x:Key="Str_UndoLast">元に戻す</sys:String>
+    <sys:String x:Key="Str_UndoCount">元に戻す ({0})</sys:String>
+    <sys:String x:Key="Str_UpdatesFmt">更新 ({0})</sys:String>
+    <sys:String x:Key="Str_CheckingUpdates">確認中...</sys:String>
+    <sys:String x:Key="Str_LightMode">ライト</sys:String>
+    <sys:String x:Key="Str_DarkMode">ダーク</sys:String>
+    <sys:String x:Key="Str_Downloads">Downloads</sys:String>
+    <sys:String x:Key="Str_Browse">参照...</sys:String>
+    <sys:String x:Key="Str_Clear">クリア</sys:String>
+    <sys:String x:Key="Str_Remove">削除</sys:String>
+    <sys:String x:Key="Str_Save">保存</sys:String>
+    <sys:String x:Key="Str_Del">削除</sys:String>
+    <sys:String x:Key="Str_Add">追加</sys:String>
+    <sys:String x:Key="Str_SaveTo">保存先:</sys:String>
+    <sys:String x:Key="Str_IncludeSubdirs">サブフォルダを含める</sys:String>
+    <sys:String x:Key="Str_StatusCompleted">完了</sys:String>
+    <sys:String x:Key="Str_StatusError">要確認</sys:String>
+
+    <!-- Status Badges & Grid Headers -->
+    <sys:String x:Key="Str_ColIndex">#</sys:String>
+    <sys:String x:Key="Str_ColStatus">状態</sys:String>
+    <sys:String x:Key="Str_ColSourceFile">元のファイル</sys:String>
+    <sys:String x:Key="Str_ColDestRelative">移動先パス</sys:String>
+    <sys:String x:Key="Str_ColNote">メモ</sys:String>
+    <sys:String x:Key="Str_ColOrigName">元のファイル名</sys:String>
+    <sys:String x:Key="Str_ColNewName">新しい名前 (プレビュー)</sys:String>
+    <sys:String x:Key="Str_StatusReady">準備完了</sys:String>
+    <sys:String x:Key="Str_StatusAutoNumbered">自動連番</sys:String>
+    <sys:String x:Key="Str_StatusSkipped">スキップ</sys:String>
+    <sys:String x:Key="Str_StatusWarning">警告</sys:String>
+    <sys:String x:Key="Str_StatusErr">エラー</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_TabOrganize">フォルダ整理</sys:String>
+    <sys:String x:Key="Str_TabRename">リスト一括リネーム</sys:String>
+    <sys:String x:Key="Str_TabDuplicates">重複ファイル検索</sys:String>
+    <sys:String x:Key="Str_TabSpace">容量クリーナー</sys:String>
+    <sys:String x:Key="Str_TabImage">画像リサイズ</sys:String>
+    <sys:String x:Key="Str_TabAutomation">自動化 &amp; ツール</sys:String>
+    <sys:String x:Key="Str_TabSmartAi">スマート OCR &amp; AI</sys:String>
+
+    <!-- Tab 1: Organize Folder -->
+    <sys:String x:Key="Str_TargetFolder">対象フォルダ:</sys:String>
+    <sys:String x:Key="Str_TargetFolderHint">フォルダを選択またはドラッグ＆ドロップ (例: Downloads)</sys:String>
+    <sys:String x:Key="Str_ScanAndPreview">スキャン &amp; プレビュー</sys:String>
+    <sys:String x:Key="Str_GroupingOptions">整理オプション</sys:String>
+    <sys:String x:Key="Str_ModeLabel">モード:</sys:String>
+    <sys:String x:Key="Str_DateFormatLabel">日付形式:</sys:String>
+    <sys:String x:Key="Str_UseExifDate">写真は EXIF 撮影日時を優先する</sys:String>
+    <sys:String x:Key="Str_MinAgeDays">経過日数:</sys:String>
+    <sys:String x:Key="Str_MinAgeHint">任意 (例: 30日以上前のファイルのみ対象)</sys:String>
+    <sys:String x:Key="Str_IgnoreActiveDownloads">ダウンロード中のファイルを除外 (.crdownload, .part, .tmp)</sys:String>
+    <sys:String x:Key="Str_CustomRulesTitle">カスタムルール (自動保存)</sys:String>
+    <sys:String x:Key="Str_RuleFolderHint">フォルダ名</sys:String>
+    <sys:String x:Key="Str_RuleKeywordsHint">キーワード</sys:String>
+    <sys:String x:Key="Str_RuleExtHint">拡張子 (.mp4)</sys:String>
+    <sys:String x:Key="Str_RuleDaysHint">日数</sys:String>
+    <sys:String x:Key="Str_ApplyOrganize">整理を実行</sys:String>
+    <sys:String x:Key="Str_OrganizeInitialHint">フォルダを選択して「スキャン &amp; プレビュー」をクリックしてください。</sys:String>
+    <sys:String x:Key="Str_OrganizeFolderMissing">フォルダが見つかりません。有効なフォルダを指定してください。</sys:String>
+    <sys:String x:Key="Str_OrganizeSummaryFmt">スキャン: {0}件 · 実行可能: {1} · 自動連番: {2} · スキップ: {3}</sys:String>
+
+    <!-- Tab 2: List Batch Rename -->
+    <sys:String x:Key="Str_RenameSelectHeader">1. 対象ファイル (Explorerからドラッグ＆ドロップ)</sys:String>
+    <sys:String x:Key="Str_AddFiles">ファイル追加...</sys:String>
+    <sys:String x:Key="Str_FromFolder">フォルダから...</sys:String>
+    <sys:String x:Key="Str_MoveUp">上へ</sys:String>
+    <sys:String x:Key="Str_MoveDown">下へ</sys:String>
+    <sys:String x:Key="Str_SortAZ">名前順</sys:String>
+    <sys:String x:Key="Str_SortDate">日付順</sys:String>
+    <sys:String x:Key="Str_RenameFromList">リストからリネーム</sys:String>
+    <sys:String x:Key="Str_QuickTemplate">テンプレート</sys:String>
+    <sys:String x:Key="Str_OcrSuggest">OCR 提案</sys:String>
+    <sys:String x:Key="Str_PasteClipboard">貼り付け</sys:String>
+    <sys:String x:Key="Str_SaveListAs">リスト名で保存...</sys:String>
+    <sys:String x:Key="Str_PatternLabel">パターン ({index}, {name}, {date}, {exif_date}, {ext}):</sys:String>
+    <sys:String x:Key="Str_FindText">検索文字:</sys:String>
+    <sys:String x:Key="Str_ReplaceWith">置換後:</sys:String>
+    <sys:String x:Key="Str_KeepExt">元の拡張子を保持</sys:String>
+    <sys:String x:Key="Str_CleanDuplicates">(1) / Copy of を削除</sys:String>
+    <sys:String x:Key="Str_PrefixHint">接頭辞</sys:String>
+    <sys:String x:Key="Str_SuffixHint">接尾辞</sys:String>
+    <sys:String x:Key="Str_OutputFolderHint">元のフォルダと同じ (任意: 出力先を選択...)</sys:String>
+    <sys:String x:Key="Str_ApplyRename">リネームを実行</sys:String>
+    <sys:String x:Key="Str_RenameInitialHint">ファイルを追加し、新しい名前リストを入力または貼り付けてください。</sys:String>
+    <sys:String x:Key="Str_ParsedListCountFmt">リスト {0}件 · 選択ファイル {1}件</sys:String>
+    <sys:String x:Key="Str_RenameSummaryFmt">ファイル: {0} · 実行可能: {1} · 自動連番: {2} · スキップ: {3} · エラー: {4}</sys:String>
+
+    <!-- Tab 3: Duplicate Finder -->
+    <sys:String x:Key="Str_ScanFolder">スキャン対象:</sys:String>
+    <sys:String x:Key="Str_ScanDuplicates">重複スキャン</sys:String>
+    <sys:String x:Key="Str_KeepOldest">最古を残す</sys:String>
+    <sys:String x:Key="Str_KeepNewest">最新を残す</sys:String>
+    <sys:String x:Key="Str_UncheckAll">すべて解除</sys:String>
+    <sys:String x:Key="Str_ColTrash">削除</sys:String>
+    <sys:String x:Key="Str_ColGroup">グループ</sys:String>
+    <sys:String x:Key="Str_ColSize">サイズ</sys:String>
+    <sys:String x:Key="Str_ColFileName">ファイル名</sys:String>
+    <sys:String x:Key="Str_ColModified">更新日時</sys:String>
+    <sys:String x:Key="Str_ColFolder">フォルダ</sys:String>
+    <sys:String x:Key="Str_MoveCheckedRecycle">選択ファイルをごみ箱へ移動</sys:String>
+    <sys:String x:Key="Str_DupInitialHint">フォルダを選択して「重複スキャン」を実行してください (SHA-256)。</sys:String>
+
+    <!-- Tab 4: Space Cleaner -->
+    <sys:String x:Key="Str_AnalyzeFolder">分析対象:</sys:String>
+    <sys:String x:Key="Str_ScanSpace">容量スキャン</sys:String>
+    <sys:String x:Key="Str_LargestFilesTitle">大容量ファイル (上位100件)</sys:String>
+    <sys:String x:Key="Str_SubfolderUsageTitle">サブフォルダ使用量</sys:String>
+    <sys:String x:Key="Str_ColFiles">ファイル数</sys:String>
+    <sys:String x:Key="Str_EmptyFoldersFmt">空のフォルダ ({0})</sys:String>
+    <sys:String x:Key="Str_CleanEmpty">空フォルダ削除</sys:String>
+    <sys:String x:Key="Str_MoveSelectedRecycle">選択ファイルをごみ箱へ移動</sys:String>
+    <sys:String x:Key="Str_SpaceInitialHint">大容量ファイルや空のフォルダを検出するにはスキャンを実行してください。</sys:String>
+
+    <!-- Tab 5: Image Resizer -->
+    <sys:String x:Key="Str_ImageHeaderHint">ここに画像をドラッグ＆ドロップ (JPG, PNG, BMP, TIFF) または追加:</sys:String>
+    <sys:String x:Key="Str_AddImages">画像追加...</sys:String>
+    <sys:String x:Key="Str_ResizeMode">リサイズ方法</sys:String>
+    <sys:String x:Key="Str_WidthPx">幅 (px)</sys:String>
+    <sys:String x:Key="Str_HeightPx">高さ (px)</sys:String>
+    <sys:String x:Key="Str_ScalePct">倍率 (%)</sys:String>
+    <sys:String x:Key="Str_Format">出力形式</sys:String>
+    <sys:String x:Key="Str_SuffixLabel">接尾辞</sys:String>
+    <sys:String x:Key="Str_DoNotUpscale">元より小さい画像は拡大しない</sys:String>
+    <sys:String x:Key="Str_ColSourceImage">元の画像</sys:String>
+    <sys:String x:Key="Str_ColOutputFile">出力ファイル</sys:String>
+    <sys:String x:Key="Str_ColOperation">処理内容</sys:String>
+    <sys:String x:Key="Str_ApplyImages">リサイズ / 変換を実行</sys:String>
+    <sys:String x:Key="Str_ImageInitialHint">画像を追加またはドロップしてリサイズ・形式変換します。</sys:String>
+
+    <!-- Tab 6: Automation & Tools -->
+    <sys:String x:Key="Str_WatchTitle">バックグラウンド自動監視 (タスクトレイ)</sys:String>
+    <sys:String x:Key="Str_FolderLabel">フォルダ:</sys:String>
+    <sys:String x:Key="Str_StartWatch">監視を開始</sys:String>
+    <sys:String x:Key="Str_StopWatch">監視を停止</sys:String>
+    <sys:String x:Key="Str_MinimizeOnClose">監視中にウィンドウを閉じたらタスクトレイに最小化</sys:String>
+    <sys:String x:Key="Str_MinimizeNow">トレイへ最小化</sys:String>
+    <sys:String x:Key="Str_ExplorerTitle">Windows エクスプローラー右クリックメニュー</sys:String>
+    <sys:String x:Key="Str_AddExplorerMenu">右クリックメニューに登録</sys:String>
+    <sys:String x:Key="Str_RemoveExplorerMenu">右クリックメニューを解除</sys:String>
+    <sys:String x:Key="Str_WatchLogTitle">自動監視アクティビティログ</sys:String>
+    <sys:String x:Key="Str_ClearLog">ログ消去</sys:String>
+
+    <!-- Tab 7: Smart OCR & AI -->
+    <sys:String x:Key="Str_PreviewSmartPlan">スマートプランを作成</sys:String>
+    <sys:String x:Key="Str_InstructionLabel">指示:</sys:String>
+    <sys:String x:Key="Str_InstructionHint">例: 請求書は Finance、動画は Media、dincox ファイルは Dincox へ整理</sys:String>
+    <sys:String x:Key="Str_UseExternalAi">外部 AI / ローカル Ollama を使用 (オフで完全オフライン整理)</sys:String>
+    <sys:String x:Key="Str_OcrInspectorTitle">Windows OCR テキスト抽出</sys:String>
+    <sys:String x:Key="Str_ExtractImageText">画像から文字抽出...</sys:String>
+    <sys:String x:Key="Str_ColProposedDest">提案パス</sys:String>
+    <sys:String x:Key="Str_ColReason">理由</sys:String>
+    <sys:String x:Key="Str_ApplySmartPlan">スマートプランを実行</sys:String>
+    <sys:String x:Key="Str_SmartInitialHint">指示を入力して「スマートプランを作成」をクリックしてください。</sys:String>
+
+    <!-- Enum Friendly Display Strings -->
+    <sys:String x:Key="Str_Enum_ByCategory">ファイル種類別</sys:String>
+    <sys:String x:Key="Str_Enum_ByDate">日付別</sys:String>
+    <sys:String x:Key="Str_Enum_ByCustomRulesFirstThenCategory">カスタムルール優先 → 種類別</sys:String>
+    <sys:String x:Key="Str_Enum_ByCustomRulesOnly">カスタムルールのみ</sys:String>
+    <sys:String x:Key="Str_Enum_MatchAny">いずれかに一致 (OR)</sys:String>
+    <sys:String x:Key="Str_Enum_MatchAll">すべてに一致 (AND)</sys:String>
+    <sys:String x:Key="Str_Enum_SkipExtraFiles">余分なファイルをスキップ</sys:String>
+    <sys:String x:Key="Str_Enum_PadWithOriginalNameAndIndex">連番 + 元のファイル名</sys:String>
+    <sys:String x:Key="Str_Enum_PadWithPrefixAndIndex">接頭辞 + 連番</sys:String>
+    <sys:String x:Key="Str_Enum_MaxWidth">最大幅指定 (比率維持)</sys:String>
+    <sys:String x:Key="Str_Enum_MaxHeight">最大高さ指定 (比率維持)</sys:String>
+    <sys:String x:Key="Str_Enum_FitWithinBox">枠内に収める (比率維持)</sys:String>
+    <sys:String x:Key="Str_Enum_Percentage">パーセント拡大縮小 (%)</sys:String>
+    <sys:String x:Key="Str_Enum_CropToExact">指定サイズに中央トリミング</sys:String>
+    <sys:String x:Key="Str_Enum_ExactStretch">指定サイズに引き伸ばし</sys:String>
+
+    <!-- About Dialog -->
+    <sys:String x:Key="Str_AboutButton">アプリ情報</sys:String>
+    <sys:String x:Key="Str_AboutTitle">TidyFlow について</sys:String>
+    <sys:String x:Key="Str_AboutTagline">Windows向けのフォルダ整理、リスト一括リネーム、重複検索、容量クリーナー、画像リサイズ、自動監視ツール。</sys:String>
+    <sys:String x:Key="Str_AboutAuthor">作成者: Thang Huynh · ライセンス: MIT Open Source</sys:String>
+    <sys:String x:Key="Str_AboutGuideTitle">機能クイックガイド</sys:String>
+    <sys:String x:Key="Str_AboutGuideBody">• フォルダ整理: Downloads等を種類・撮影日(EXIF)・カスタムAND/ORルールで整理。
+• リスト一括リネーム: 名前リストの貼り付け、並び替え、画像からのOCR名前提案に対応。
+• 重複ファイル検索: SHA-256で同一ファイルを検出し、安全にごみ箱へ移動。
+• 容量クリーナー: 大容量ファイル上位100件の把握と空フォルダの一括削除。
+• 画像リサイズ: 比率維持・中央トリミング・引き伸ばし・%拡縮・形式変換に対応。
+• 自動化 &amp; ツール: タスクトレイでのバックグラウンド監視と右クリックメニュー連携。
+• スマート OCR &amp; AI: 画像の文字抽出や自然言語でのフォルダ整理プラン生成 (Undo対応)。</sys:String>
+    <sys:String x:Key="Str_OpenGitHub">GitHub リポジトリ</sys:String>
+    <sys:String x:Key="Str_OpenReleases">リリース一覧</sys:String>
+    <sys:String x:Key="Str_OpenHistory">Undo 履歴フォルダ</sys:String>
+    <sys:String x:Key="Str_Close">閉じる</sys:String>
+
+</ResourceDictionary>

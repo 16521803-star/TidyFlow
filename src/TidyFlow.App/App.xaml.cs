@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using TidyFlow.App.Services;
 
 namespace TidyFlow.App;
 
@@ -13,6 +14,7 @@ public partial class App : Application
 
         try
         {
+            LocalizationService.Instance.Initialize();
             var window = new MainWindow
             {
                 WindowState = WindowState.Normal,

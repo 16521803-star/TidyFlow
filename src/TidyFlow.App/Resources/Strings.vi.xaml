@@ -1,0 +1,197 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Header & Common -->
+    <sys:String x:Key="Str_AppTitle">TidyFlow — Dọn Dẹp Thư Mục &amp; Đổi Tên Hàng Loạt</sys:String>
+    <sys:String x:Key="Str_UndoLast">Hoàn tác</sys:String>
+    <sys:String x:Key="Str_UndoCount">Hoàn tác ({0})</sys:String>
+    <sys:String x:Key="Str_UpdatesFmt">Cập nhật ({0})</sys:String>
+    <sys:String x:Key="Str_CheckingUpdates">Đang kiểm tra...</sys:String>
+    <sys:String x:Key="Str_LightMode">Giao diện Sáng</sys:String>
+    <sys:String x:Key="Str_DarkMode">Giao diện Tối</sys:String>
+    <sys:String x:Key="Str_Downloads">Downloads</sys:String>
+    <sys:String x:Key="Str_Browse">Chọn...</sys:String>
+    <sys:String x:Key="Str_Clear">Xóa</sys:String>
+    <sys:String x:Key="Str_Remove">Gỡ</sys:String>
+    <sys:String x:Key="Str_Save">Lưu</sys:String>
+    <sys:String x:Key="Str_Del">Xóa</sys:String>
+    <sys:String x:Key="Str_Add">Thêm</sys:String>
+    <sys:String x:Key="Str_SaveTo">Lưu vào:</sys:String>
+    <sys:String x:Key="Str_IncludeSubdirs">Bao gồm thư mục con</sys:String>
+    <sys:String x:Key="Str_StatusCompleted">Hoàn tất</sys:String>
+    <sys:String x:Key="Str_StatusError">Cần kiểm tra</sys:String>
+
+    <!-- Status Badges & Grid Headers -->
+    <sys:String x:Key="Str_ColIndex">#</sys:String>
+    <sys:String x:Key="Str_ColStatus">Trạng thái</sys:String>
+    <sys:String x:Key="Str_ColSourceFile">File gốc</sys:String>
+    <sys:String x:Key="Str_ColDestRelative">Đường dẫn đích</sys:String>
+    <sys:String x:Key="Str_ColNote">Ghi chú</sys:String>
+    <sys:String x:Key="Str_ColOrigName">Tên cũ</sys:String>
+    <sys:String x:Key="Str_ColNewName">Tên mới (Xem trước)</sys:String>
+    <sys:String x:Key="Str_StatusReady">Sẵn sàng</sys:String>
+    <sys:String x:Key="Str_StatusAutoNumbered">Tự đánh số</sys:String>
+    <sys:String x:Key="Str_StatusSkipped">Bỏ qua</sys:String>
+    <sys:String x:Key="Str_StatusWarning">Cảnh báo</sys:String>
+    <sys:String x:Key="Str_StatusErr">Lỗi</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_TabOrganize">Sắp xếp Thư mục</sys:String>
+    <sys:String x:Key="Str_TabRename">Đổi tên theo List</sys:String>
+    <sys:String x:Key="Str_TabDuplicates">Tìm File Trùng</sys:String>
+    <sys:String x:Key="Str_TabSpace">Dọn Dung lượng</sys:String>
+    <sys:String x:Key="Str_TabImage">Resize Ảnh</sys:String>
+    <sys:String x:Key="Str_TabAutomation">Tự động &amp; Tiện ích</sys:String>
+    <sys:String x:Key="Str_TabSmartAi">OCR &amp; AI Thông minh</sys:String>
+
+    <!-- Tab 1: Organize Folder -->
+    <sys:String x:Key="Str_TargetFolder">Thư mục nguồn:</sys:String>
+    <sys:String x:Key="Str_TargetFolderHint">Chọn hoặc kéo thả thư mục vào đây (vd: Downloads)</sys:String>
+    <sys:String x:Key="Str_ScanAndPreview">Quét &amp; Xem trước</sys:String>
+    <sys:String x:Key="Str_GroupingOptions">Tùy chọn phân loại</sys:String>
+    <sys:String x:Key="Str_ModeLabel">Chế độ:</sys:String>
+    <sys:String x:Key="Str_DateFormatLabel">Định dạng ngày:</sys:String>
+    <sys:String x:Key="Str_UseExifDate">Ưu tiên dùng ngày chụp EXIF cho ảnh</sys:String>
+    <sys:String x:Key="Str_MinAgeDays">Tối thiểu (ngày):</sys:String>
+    <sys:String x:Key="Str_MinAgeHint">Tùy chọn (vd: 30 để chỉ gom file cũ hơn 30 ngày)</sys:String>
+    <sys:String x:Key="Str_IgnoreActiveDownloads">Bỏ qua file đang tải dở (.crdownload, .part, .tmp)</sys:String>
+    <sys:String x:Key="Str_CustomRulesTitle">Rule riêng (Tự động lưu)</sys:String>
+    <sys:String x:Key="Str_RuleFolderHint">Thư mục đích</sys:String>
+    <sys:String x:Key="Str_RuleKeywordsHint">Từ khóa</sys:String>
+    <sys:String x:Key="Str_RuleExtHint">Đuôi (.mp4)</sys:String>
+    <sys:String x:Key="Str_RuleDaysHint">Ngày</sys:String>
+    <sys:String x:Key="Str_ApplyOrganize">Áp dụng Sắp xếp</sys:String>
+    <sys:String x:Key="Str_OrganizeInitialHint">Chọn thư mục (vd: Downloads) rồi bấm Quét &amp; Xem trước.</sys:String>
+    <sys:String x:Key="Str_OrganizeFolderMissing">Không tìm thấy thư mục. Vui lòng chọn thư mục hợp lệ.</sys:String>
+    <sys:String x:Key="Str_OrganizeSummaryFmt">Đã quét {0} file · Sẵn sàng: {1} · Tự đánh số: {2} · Bỏ qua: {3}</sys:String>
+
+    <!-- Tab 2: List Batch Rename -->
+    <sys:String x:Key="Str_RenameSelectHeader">1. Danh sách File (Kéo thả từ Explorer hoặc Thêm)</sys:String>
+    <sys:String x:Key="Str_AddFiles">Thêm File...</sys:String>
+    <sys:String x:Key="Str_FromFolder">Từ Thư mục...</sys:String>
+    <sys:String x:Key="Str_MoveUp">Lên trên</sys:String>
+    <sys:String x:Key="Str_MoveDown">Xuống dưới</sys:String>
+    <sys:String x:Key="Str_SortAZ">Xếp A-Z</sys:String>
+    <sys:String x:Key="Str_SortDate">Xếp theo ngày</sys:String>
+    <sys:String x:Key="Str_RenameFromList">Đổi tên từ Danh sách</sys:String>
+    <sys:String x:Key="Str_QuickTemplate">Mẫu nhanh (Template)</sys:String>
+    <sys:String x:Key="Str_OcrSuggest">Gợi ý OCR</sys:String>
+    <sys:String x:Key="Str_PasteClipboard">Dán Clipboard</sys:String>
+    <sys:String x:Key="Str_SaveListAs">Lưu list tên...</sys:String>
+    <sys:String x:Key="Str_PatternLabel">Mẫu ({index}, {name}, {date}, {exif_date}, {ext}):</sys:String>
+    <sys:String x:Key="Str_FindText">Tìm chuỗi:</sys:String>
+    <sys:String x:Key="Str_ReplaceWith">Thay bằng:</sys:String>
+    <sys:String x:Key="Str_KeepExt">Giữ nguyên đuôi file gốc</sys:String>
+    <sys:String x:Key="Str_CleanDuplicates">Xóa rác (1) / Copy of</sys:String>
+    <sys:String x:Key="Str_PrefixHint">Tiền tố</sys:String>
+    <sys:String x:Key="Str_SuffixHint">Hậu tố</sys:String>
+    <sys:String x:Key="Str_OutputFolderHint">Cùng thư mục gốc (tùy chọn: chọn nơi lưu...)</sys:String>
+    <sys:String x:Key="Str_ApplyRename">Áp dụng Đổi tên</sys:String>
+    <sys:String x:Key="Str_RenameInitialHint">Thêm file (hoặc kéo thả từ Explorer) và dán danh sách tên để xem trước.</sys:String>
+    <sys:String x:Key="Str_ParsedListCountFmt">{0} tên trong list · Đã chọn {1} file</sys:String>
+    <sys:String x:Key="Str_RenameSummaryFmt">File: {0} · Sẵn sàng: {1} · Tự đánh số: {2} · Bỏ qua: {3} · Lỗi: {4}</sys:String>
+
+    <!-- Tab 3: Duplicate Finder -->
+    <sys:String x:Key="Str_ScanFolder">Thư mục quét:</sys:String>
+    <sys:String x:Key="Str_ScanDuplicates">Quét File Trùng</sys:String>
+    <sys:String x:Key="Str_KeepOldest">Giữ bản cũ nhất</sys:String>
+    <sys:String x:Key="Str_KeepNewest">Giữ bản mới nhất</sys:String>
+    <sys:String x:Key="Str_UncheckAll">Bỏ chọn hết</sys:String>
+    <sys:String x:Key="Str_ColTrash">Xóa</sys:String>
+    <sys:String x:Key="Str_ColGroup">Nhóm</sys:String>
+    <sys:String x:Key="Str_ColSize">Dung lượng</sys:String>
+    <sys:String x:Key="Str_ColFileName">Tên file</sys:String>
+    <sys:String x:Key="Str_ColModified">Ngày sửa</sys:String>
+    <sys:String x:Key="Str_ColFolder">Thư mục</sys:String>
+    <sys:String x:Key="Str_MoveCheckedRecycle">Đưa file đã chọn vào Recycle Bin</sys:String>
+    <sys:String x:Key="Str_DupInitialHint">Chọn thư mục và bấm Quét File Trùng để tìm file giống hệt nội dung (SHA-256).</sys:String>
+
+    <!-- Tab 4: Space Cleaner -->
+    <sys:String x:Key="Str_AnalyzeFolder">Phân tích thư mục:</sys:String>
+    <sys:String x:Key="Str_ScanSpace">Quét Dung lượng</sys:String>
+    <sys:String x:Key="Str_LargestFilesTitle">File nặng nhất (Top 100)</sys:String>
+    <sys:String x:Key="Str_SubfolderUsageTitle">Dung lượng thư mục con</sys:String>
+    <sys:String x:Key="Str_ColFiles">Số file</sys:String>
+    <sys:String x:Key="Str_EmptyFoldersFmt">Thư mục rỗng ({0})</sys:String>
+    <sys:String x:Key="Str_CleanEmpty">Xóa thư mục rỗng</sys:String>
+    <sys:String x:Key="Str_MoveSelectedRecycle">Đưa file đã chọn vào Recycle Bin</sys:String>
+    <sys:String x:Key="Str_SpaceInitialHint">Quét thư mục để tìm file nặng nhất, thư mục con chiếm chỗ và thư mục rỗng.</sys:String>
+
+    <!-- Tab 5: Image Resizer -->
+    <sys:String x:Key="Str_ImageHeaderHint">Kéo thả ảnh vào đây (JPG, PNG, BMP, TIFF) hoặc chọn file:</sys:String>
+    <sys:String x:Key="Str_AddImages">Thêm Ảnh...</sys:String>
+    <sys:String x:Key="Str_ResizeMode">Chế độ Resize</sys:String>
+    <sys:String x:Key="Str_WidthPx">Rộng (px)</sys:String>
+    <sys:String x:Key="Str_HeightPx">Cao (px)</sys:String>
+    <sys:String x:Key="Str_ScalePct">Tỷ lệ (%)</sys:String>
+    <sys:String x:Key="Str_Format">Định dạng</sys:String>
+    <sys:String x:Key="Str_SuffixLabel">Hậu tố</sys:String>
+    <sys:String x:Key="Str_DoNotUpscale">Không phóng to ảnh vốn nhỏ hơn</sys:String>
+    <sys:String x:Key="Str_ColSourceImage">Ảnh gốc</sys:String>
+    <sys:String x:Key="Str_ColOutputFile">File xuất</sys:String>
+    <sys:String x:Key="Str_ColOperation">Thao tác</sys:String>
+    <sys:String x:Key="Str_ApplyImages">Resize / Đổi định dạng</sys:String>
+    <sys:String x:Key="Str_ImageInitialHint">Thêm hoặc kéo thả ảnh (JPG, PNG, BMP, TIFF) để thay đổi kích thước/định dạng.</sys:String>
+
+    <!-- Tab 6: Automation & Tools -->
+    <sys:String x:Key="Str_WatchTitle">Theo dõi thư mục ngầm (System Tray)</sys:String>
+    <sys:String x:Key="Str_FolderLabel">Thư mục:</sys:String>
+    <sys:String x:Key="Str_StartWatch">Bật Theo dõi</sys:String>
+    <sys:String x:Key="Str_StopWatch">Dừng Theo dõi</sys:String>
+    <sys:String x:Key="Str_MinimizeOnClose">Thu nhỏ xuống System Tray khi đóng cửa sổ lúc đang bật Theo dõi</sys:String>
+    <sys:String x:Key="Str_MinimizeNow">Thu xuống Tray ngay</sys:String>
+    <sys:String x:Key="Str_ExplorerTitle">Tích hợp Menu chuột phải Windows Explorer</sys:String>
+    <sys:String x:Key="Str_AddExplorerMenu">Thêm vào Menu chuột phải</sys:String>
+    <sys:String x:Key="Str_RemoveExplorerMenu">Gỡ khỏi Menu chuột phải</sys:String>
+    <sys:String x:Key="Str_WatchLogTitle">Nhật ký hoạt động Watch Folder</sys:String>
+    <sys:String x:Key="Str_ClearLog">Xóa Nhật ký</sys:String>
+
+    <!-- Tab 7: Smart OCR & AI -->
+    <sys:String x:Key="Str_PreviewSmartPlan">Tạo bản xem trước</sys:String>
+    <sys:String x:Key="Str_InstructionLabel">Yêu cầu:</sys:String>
+    <sys:String x:Key="Str_InstructionHint">vd: Gom hóa đơn vào Finance, video vào Media, file dincox vào Dincox</sys:String>
+    <sys:String x:Key="Str_UseExternalAi">Dùng AI ngoài / Ollama local (bỏ chọn để phân loại 100% offline theo từ khóa &amp; nội dung)</sys:String>
+    <sys:String x:Key="Str_OcrInspectorTitle">Đọc chữ từ Ảnh (Windows Native OCR)</sys:String>
+    <sys:String x:Key="Str_ExtractImageText">Chọn ảnh trích chữ...</sys:String>
+    <sys:String x:Key="Str_ColProposedDest">Đường dẫn đề xuất</sys:String>
+    <sys:String x:Key="Str_ColReason">Lý do</sys:String>
+    <sys:String x:Key="Str_ApplySmartPlan">Áp dụng Kế hoạch</sys:String>
+    <sys:String x:Key="Str_SmartInitialHint">Nhập yêu cầu rồi bấm Tạo bản xem trước (chạy được offline hoặc qua Ollama/OpenAI API).</sys:String>
+
+    <!-- Enum Friendly Display Strings -->
+    <sys:String x:Key="Str_Enum_ByCategory">Theo loại file (Category)</sys:String>
+    <sys:String x:Key="Str_Enum_ByDate">Theo ngày tháng (Date)</sys:String>
+    <sys:String x:Key="Str_Enum_ByCustomRulesFirstThenCategory">Rule riêng trước -&gt; Loại file</sys:String>
+    <sys:String x:Key="Str_Enum_ByCustomRulesOnly">Chỉ theo Rule riêng</sys:String>
+    <sys:String x:Key="Str_Enum_MatchAny">Khớp 1 điều kiện (OR)</sys:String>
+    <sys:String x:Key="Str_Enum_MatchAll">Khớp tất cả (AND)</sys:String>
+    <sys:String x:Key="Str_Enum_SkipExtraFiles">Bỏ qua file dư</sys:String>
+    <sys:String x:Key="Str_Enum_PadWithOriginalNameAndIndex">Đánh số + giữ tên gốc</sys:String>
+    <sys:String x:Key="Str_Enum_PadWithPrefixAndIndex">Tiền tố + đánh số</sys:String>
+    <sys:String x:Key="Str_Enum_MaxWidth">Theo chiều rộng (giữ tỷ lệ)</sys:String>
+    <sys:String x:Key="Str_Enum_MaxHeight">Theo chiều cao (giữ tỷ lệ)</sys:String>
+    <sys:String x:Key="Str_Enum_FitWithinBox">Vừa khung WxH (giữ tỷ lệ)</sys:String>
+    <sys:String x:Key="Str_Enum_Percentage">Theo phần trăm (%)</sys:String>
+    <sys:String x:Key="Str_Enum_CropToExact">Cắt giữa đúng WxH</sys:String>
+    <sys:String x:Key="Str_Enum_ExactStretch">Kéo giãn đúng WxH</sys:String>
+
+    <!-- About Dialog -->
+    <sys:String x:Key="Str_AboutButton">Thông tin</sys:String>
+    <sys:String x:Key="Str_AboutTitle">Giới thiệu TidyFlow</sys:String>
+    <sys:String x:Key="Str_AboutTagline">Công cụ Windows thông minh giúp dọn dẹp thư mục, đổi tên hàng loạt theo danh sách, tìm file trùng, dọn dung lượng, resize ảnh và tự động hóa.</sys:String>
+    <sys:String x:Key="Str_AboutAuthor">Tác giả: Thang Huynh · Giấy phép: MIT Open Source</sys:String>
+    <sys:String x:Key="Str_AboutGuideTitle">Hướng dẫn nhanh các tính năng</sys:String>
+    <sys:String x:Key="Str_AboutGuideBody">• Sắp xếp Thư mục: Gom file Downloads theo loại, ngày (EXIF), hoặc rule AND/OR tự chọn.
+• Đổi tên theo List: Dán danh sách tên mới, sắp thứ tự file, hoặc dùng Gợi ý OCR từ ảnh.
+• Tìm File Trùng: Quét trùng nội dung SHA-256 và đưa bản dư vào Recycle Bin an toàn.
+• Dọn Dung lượng: Tìm top 100 file nặng nhất, xem dung lượng thư mục và xóa thư mục rỗng.
+• Resize Ảnh: Co vừa khung, cắt giữa đúng kích thước (CropToExact), % và đổi định dạng ảnh.
+• Tự động &amp; Tiện ích: Theo dõi thư mục ngầm dưới System Tray &amp; gắn menu chuột phải Explorer.
+• OCR &amp; AI Thông minh: Trích chữ từ ảnh hoặc gom file bằng câu lệnh (Offline / Ollama / API).</sys:String>
+    <sys:String x:Key="Str_OpenGitHub">Trang GitHub</sys:String>
+    <sys:String x:Key="Str_OpenReleases">Bản phát hành</sys:String>
+    <sys:String x:Key="Str_OpenHistory">Thư mục Undo Log</sys:String>
+    <sys:String x:Key="Str_Close">Đóng</sys:String>
+
+</ResourceDictionary>

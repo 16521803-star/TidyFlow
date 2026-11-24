@@ -15,7 +15,7 @@ public sealed class AppUpdateService
         get
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            return version is null ? "v0.6.1" : $"v{version.Major}.{version.Minor}.{version.Build}";
+            return version is null ? "v0.7.0" : $"v{version.Major}.{version.Minor}.{version.Build}";
         }
     }
 
@@ -32,7 +32,14 @@ public sealed class AppUpdateService
                     $"Running portable/dev build ({CurrentVersionDisplay}). Auto-update is active when installed via the GitHub Release setup.");
             }
 
-            var updateInfo = await manager.CheckForUpdatesAsync();
+            var checkTask = manager.CheckForUpdatesAsync();
+            var completed = await Task.WhenAny(checkTask, Task.Delay(TimeSpan.FromSeconds(15)));
+            if (completed != checkTask)
+            {
+                return new UpdateCheckOutcome(false, false, "Update check timed out. Check your internet connection or GitHub Releases.");
+            }
+
+            var updateInfo = await checkTask;
             if (updateInfo is null)
             {
                 return new UpdateCheckOutcome(false, false, $"You are on the latest version ({CurrentVersionDisplay}).");

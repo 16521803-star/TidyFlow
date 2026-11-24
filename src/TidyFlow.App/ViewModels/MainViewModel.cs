@@ -21,6 +21,7 @@ public sealed class MainViewModel : ObservableObject
     private string _undoButtonText = "Undo Last";
     private bool _canUndo;
     private bool _isCheckingUpdates;
+    private LanguageOption _selectedLanguage;
 
     public MainViewModel(Action<string, string>? showTrayNotification = null)
     {
@@ -36,6 +37,12 @@ public sealed class MainViewModel : ObservableObject
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
         CheckUpdatesCommand = new RelayCommand(CheckUpdatesAsync, () => !IsCheckingUpdates);
         DismissStatusCommand = new RelayCommand(() => IsStatusOpen = false);
+
+        _selectedLanguage = AvailableLanguages.FirstOrDefault(l =>
+                                string.Equals(l.Code, LocalizationService.Instance.CurrentLanguageCode, StringComparison.OrdinalIgnoreCase))
+                            ?? AvailableLanguages[0];
+
+        LocalizationService.Instance.LanguageChanged += (_, _) => OnLanguageChanged();
 
         RefreshUndoState();
     }
@@ -54,36 +61,16 @@ public sealed class MainViewModel : ObservableObject
 
     public SmartAiViewModel SmartAi { get; }
 
-    public int ActiveTabIndex
-    {
-        get => _activeTabIndex;
-        set => SetProperty(ref _activeTabIndex, value);
-    }
+    public IReadOnlyList<LanguageOption> AvailableLanguages => LocalizationService.Instance.AvailableLanguages;
 
-    public void ApplyStartupArgs(string[] args)
+    public LanguageOption SelectedLanguage
     {
-        if (args.Length < 2)
+        get => _selectedLanguage;
+        set
         {
-            return;
-        }
-
-        if (string.Equals(args[0], "--organize", StringComparison.OrdinalIgnoreCase))
-        {
-            var folder = args[1];
-            if (System.IO.Directory.Exists(folder))
+            if (value is not null && SetProperty(ref _selectedLanguage, value))
             {
-                ActiveTabIndex = 0;
-                Organize.FolderPath = folder;
-                Organize.ScanAndPreview();
-            }
-        }
-        else if (string.Equals(args[0], "--rename", StringComparison.OrdinalIgnoreCase))
-        {
-            var paths = args.Skip(1).Where(p => System.IO.File.Exists(p) || System.IO.Directory.Exists(p)).ToArray();
-            if (paths.Length > 0)
-            {
-                ActiveTabIndex = 1;
-                Rename.AddPaths(paths);
+                LocalizationService.Instance.SetLanguage(value.Code);
             }
         }
     }
@@ -94,6 +81,12 @@ public sealed class MainViewModel : ObservableObject
     public RelayCommand DismissStatusCommand { get; }
 
     public string AppVersionText => _updateService.CurrentVersionDisplay;
+
+    public int ActiveTabIndex
+    {
+        get => _activeTabIndex;
+        set => SetProperty(ref _activeTabIndex, value);
+    }
 
     public bool IsCheckingUpdates
     {
@@ -108,7 +101,9 @@ public sealed class MainViewModel : ObservableObject
         }
     }
 
-    public string UpdateButtonText => IsCheckingUpdates ? "Checking..." : $"Updates ({AppVersionText})";
+    public string UpdateButtonText => IsCheckingUpdates
+        ? LocalizationService.Instance.Get("Str_CheckingUpdates", "Checking...")
+        : LocalizationService.Instance.Format("Str_UpdatesFmt", AppVersionText);
 
     public bool IsStatusOpen
     {
@@ -152,7 +147,37 @@ public sealed class MainViewModel : ObservableObject
         }
     }
 
-    public string ThemeButtonText => _isDarkTheme ? "Light Mode" : "Dark Mode";
+    public string ThemeButtonText => _isDarkTheme
+        ? LocalizationService.Instance.Get("Str_LightMode", "Light Mode")
+        : LocalizationService.Instance.Get("Str_DarkMode", "Dark Mode");
+
+    public void ApplyStartupArgs(string[] args)
+    {
+        if (args.Length < 2)
+        {
+            return;
+        }
+
+        if (string.Equals(args[0], "--organize", StringComparison.OrdinalIgnoreCase))
+        {
+            var folder = args[1];
+            if (System.IO.Directory.Exists(folder))
+            {
+                ActiveTabIndex = 0;
+                Organize.FolderPath = folder;
+                Organize.ScanAndPreview();
+            }
+        }
+        else if (string.Equals(args[0], "--rename", StringComparison.OrdinalIgnoreCase))
+        {
+            var paths = args.Skip(1).Where(p => System.IO.File.Exists(p) || System.IO.Directory.Exists(p)).ToArray();
+            if (paths.Length > 0)
+            {
+                ActiveTabIndex = 1;
+                Rename.AddPaths(paths);
+            }
+        }
+    }
 
     public void RefreshUndoState()
     {
@@ -160,12 +185,23 @@ public sealed class MainViewModel : ObservableObject
         if (latest is null)
         {
             CanUndo = false;
-            UndoButtonText = "Undo Last";
+            UndoButtonText = LocalizationService.Instance.Get("Str_UndoLast", "Undo Last");
             return;
         }
 
         CanUndo = true;
-        UndoButtonText = $"Undo ({latest.Changes.Count})";
+        UndoButtonText = LocalizationService.Instance.Format("Str_UndoCount", latest.Changes.Count);
+    }
+
+    private void OnLanguageChanged()
+    {
+        RefreshUndoState();
+        OnPropertyChanged(nameof(UpdateButtonText));
+        OnPropertyChanged(nameof(ThemeButtonText));
+        Organize.RefreshLocalization();
+        Rename.RefreshLocalization();
+        ImageResizer.RefreshLocalization();
+        Automation.RefreshLocalization();
     }
 
     private void UndoLatest()
@@ -209,7 +245,9 @@ public sealed class MainViewModel : ObservableObject
 
     private void ShowStatus(string message, bool isError)
     {
-        StatusTitle = isError ? "Action Required" : "Completed";
+        StatusTitle = isError
+            ? LocalizationService.Instance.Get("Str_StatusError", "Action Required")
+            : LocalizationService.Instance.Get("Str_StatusCompleted", "Completed");
         StatusMessage = message;
         StatusSeverity = isError ? InfoBarSeverity.Error : InfoBarSeverity.Success;
         IsStatusOpen = true;

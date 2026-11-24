@@ -431,4 +431,13 @@ public partial class MainWindow : FluentWindow
             ViewModel.SmartAi.ApplyCommand.Execute(null);
         }
     }
+
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        var about = new AboutWindow(ViewModel.AppVersionText)
+        {
+            Owner = this
+        };
+        about.ShowDialog();
+    }
 }

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using TidyFlow.App.Models;
+using TidyFlow.App.Services;
 using TidyFlow.Core.Models;
 using TidyFlow.Core.Organizing;
 using TidyFlow.Core.Presets;
@@ -93,6 +94,39 @@ public sealed class OrganizeViewModel : ObservableObject
     public IReadOnlyList<DateGroupingFormat> AvailableDateFormats { get; } = Enum.GetValues<DateGroupingFormat>();
 
     public IReadOnlyList<RuleMatchLogic> AvailableRuleMatchLogics { get; } = Enum.GetValues<RuleMatchLogic>();
+
+    public IReadOnlyList<LocalizedOption<OrganizeMode>> AvailableModeOptions => BuildModeOptions();
+
+    public IReadOnlyList<LocalizedOption<RuleMatchLogic>> AvailableRuleMatchLogicOptions => BuildRuleMatchLogicOptions();
+
+    public void RefreshLocalization()
+    {
+        OnPropertyChanged(nameof(AvailableModeOptions));
+        OnPropertyChanged(nameof(AvailableRuleMatchLogicOptions));
+        RebuildPreviewFromScanned();
+    }
+
+    private static IReadOnlyList<LocalizedOption<OrganizeMode>> BuildModeOptions()
+    {
+        var loc = LocalizationService.Instance;
+        return new[]
+        {
+            new LocalizedOption<OrganizeMode>(OrganizeMode.ByCategory, loc.Get("Str_Enum_ByCategory")),
+            new LocalizedOption<OrganizeMode>(OrganizeMode.ByDate, loc.Get("Str_Enum_ByDate")),
+            new LocalizedOption<OrganizeMode>(OrganizeMode.ByCustomRulesFirstThenCategory, loc.Get("Str_Enum_ByCustomRulesFirstThenCategory")),
+            new LocalizedOption<OrganizeMode>(OrganizeMode.ByCustomRulesOnly, loc.Get("Str_Enum_ByCustomRulesOnly"))
+        };
+    }
+
+    private static IReadOnlyList<LocalizedOption<RuleMatchLogic>> BuildRuleMatchLogicOptions()
+    {
+        var loc = LocalizationService.Instance;
+        return new[]
+        {
+            new LocalizedOption<RuleMatchLogic>(RuleMatchLogic.MatchAny, loc.Get("Str_Enum_MatchAny")),
+            new LocalizedOption<RuleMatchLogic>(RuleMatchLogic.MatchAll, loc.Get("Str_Enum_MatchAll"))
+        };
+    }
 
     public RelayCommand SelectDownloadsCommand { get; }
     public RelayCommand ScanAndPreviewCommand { get; }
@@ -307,8 +341,12 @@ public sealed class OrganizeViewModel : ObservableObject
             PreviewRows.Add(PreviewOperationRow.FromPlanned(i + 1, plan.Operations[i], FolderPath));
         }
 
-        PreviewSummary =
-            $"Scanned {_scannedFiles.Count} file(s) · Ready: {plan.ReadyCount} · Auto-Numbered: {plan.ConflictResolvedCount} · Skipped: {plan.SkippedCount}";
+        PreviewSummary = LocalizationService.Instance.Format(
+            "Str_OrganizeSummaryFmt",
+            _scannedFiles.Count,
+            plan.ReadyCount,
+            plan.ConflictResolvedCount,
+            plan.SkippedCount);
     }
 
     private void AddCustomRule()

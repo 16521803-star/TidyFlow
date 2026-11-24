@@ -71,6 +71,20 @@ public sealed class RenameViewModel : ObservableObject
 
     public IReadOnlyList<ListMismatchBehavior> AvailableMismatchBehaviors { get; } = Enum.GetValues<ListMismatchBehavior>();
 
+    public IReadOnlyList<Services.LocalizedOption<ListMismatchBehavior>> AvailableMismatchOptions => new[]
+    {
+        new Services.LocalizedOption<ListMismatchBehavior>(ListMismatchBehavior.SkipExtraFiles, Services.LocalizationService.Instance.Get("Str_Enum_SkipExtraFiles")),
+        new Services.LocalizedOption<ListMismatchBehavior>(ListMismatchBehavior.PadWithOriginalNameAndIndex, Services.LocalizationService.Instance.Get("Str_Enum_PadWithOriginalNameAndIndex")),
+        new Services.LocalizedOption<ListMismatchBehavior>(ListMismatchBehavior.PadWithPrefixAndIndex, Services.LocalizationService.Instance.Get("Str_Enum_PadWithPrefixAndIndex"))
+    };
+
+    public void RefreshLocalization()
+    {
+        OnPropertyChanged(nameof(AvailableMismatchOptions));
+        OnPropertyChanged(nameof(ParsedListCountText));
+        RebuildPreview();
+    }
+
     public RelayCommand MoveUpCommand { get; }
     public RelayCommand MoveDownCommand { get; }
     public RelayCommand SortByNameCommand { get; }
@@ -118,7 +132,10 @@ public sealed class RenameViewModel : ObservableObject
     }
 
     public string ParsedListCountText =>
-        $"{ListRenameOptions.ParseRawNameList(RawNameListText).Count} name(s) in list · {Files.Count} file(s) selected";
+        Services.LocalizationService.Instance.Format(
+            "Str_ParsedListCountFmt",
+            ListRenameOptions.ParseRawNameList(RawNameListText).Count,
+            Files.Count);
 
     public bool PreserveOriginalExtension
     {
@@ -372,8 +389,13 @@ public sealed class RenameViewModel : ObservableObject
             PreviewRows.Add(PreviewOperationRow.FromPlanned(i + 1, plan.Operations[i]));
         }
 
-        PreviewSummary =
-            $"Files: {Files.Count} · Ready: {plan.ReadyCount} · Auto-Numbered: {plan.ConflictResolvedCount} · Skipped: {plan.SkippedCount} · Errors: {plan.ErrorCount}";
+        PreviewSummary = Services.LocalizationService.Instance.Format(
+            "Str_RenameSummaryFmt",
+            Files.Count,
+            plan.ReadyCount,
+            plan.ConflictResolvedCount,
+            plan.SkippedCount,
+            plan.ErrorCount);
     }
 
     private bool CanMoveSelectedUp()

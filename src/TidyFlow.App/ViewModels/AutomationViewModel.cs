@@ -52,6 +52,23 @@ public sealed class AutomationViewModel : ObservableObject, IDisposable
 
     public IReadOnlyList<OrganizeMode> AvailableWatchModes { get; } = Enum.GetValues<OrganizeMode>();
 
+    public IReadOnlyList<LocalizedOption<OrganizeMode>> AvailableWatchModeOptions => new[]
+    {
+        new LocalizedOption<OrganizeMode>(OrganizeMode.ByCategory, LocalizationService.Instance.Get("Str_Enum_ByCategory")),
+        new LocalizedOption<OrganizeMode>(OrganizeMode.ByDate, LocalizationService.Instance.Get("Str_Enum_ByDate")),
+        new LocalizedOption<OrganizeMode>(OrganizeMode.ByCustomRulesFirstThenCategory, LocalizationService.Instance.Get("Str_Enum_ByCustomRulesFirstThenCategory")),
+        new LocalizedOption<OrganizeMode>(OrganizeMode.ByCustomRulesOnly, LocalizationService.Instance.Get("Str_Enum_ByCustomRulesOnly"))
+    };
+
+    public void RefreshLocalization()
+    {
+        OnPropertyChanged(nameof(AvailableWatchModeOptions));
+        OnPropertyChanged(nameof(WatchButtonText));
+        OnPropertyChanged(nameof(WatchStatusText));
+        OnPropertyChanged(nameof(ExplorerMenuButtonText));
+        OnPropertyChanged(nameof(ExplorerMenuStatusText));
+    }
+
     public RelayCommand ToggleWatchCommand { get; }
     public RelayCommand ToggleExplorerMenuCommand { get; }
     public RelayCommand ClearLogsCommand { get; }
@@ -81,7 +98,9 @@ public sealed class AutomationViewModel : ObservableObject, IDisposable
         }
     }
 
-    public string WatchButtonText => IsWatching ? "Stop Watch Folder" : "Start Watch Folder";
+    public string WatchButtonText => IsWatching
+        ? LocalizationService.Instance.Get("Str_StopWatch", "Stop Watch Folder")
+        : LocalizationService.Instance.Get("Str_StartWatch", "Start Watch Folder");
 
     public string WatchStatusText => IsWatching
         ? $"Active — Monitoring '{WatchFolderPath}'"
@@ -107,8 +126,8 @@ public sealed class AutomationViewModel : ObservableObject, IDisposable
     }
 
     public string ExplorerMenuButtonText => IsExplorerMenuRegistered
-        ? "Remove Explorer Context Menu"
-        : "Add Explorer Right-Click Menu";
+        ? LocalizationService.Instance.Get("Str_RemoveExplorerMenu", "Remove Explorer Context Menu")
+        : LocalizationService.Instance.Get("Str_AddExplorerMenu", "Add Explorer Right-Click Menu");
 
     public string ExplorerMenuStatusText => IsExplorerMenuRegistered
         ? "Registered (Right-click files/folders in Windows Explorer -> TidyFlow)"
