@@ -110,8 +110,8 @@ TidyFlow/
 - [x] **EXIF Date Renaming:** Read real camera `Date Taken` from JPEG photos (`ExifDateReader`) for accurate `{exif_date}` renaming & `ByDate` grouping
 
 #### 4.3 `v0.6.0` — Smart OCR & Optional AI Organization
-- [ ] **Windows Native OCR Rename Helper:** Use built-in `Windows.Media.Ocr` (zero external model download) to extract text from screenshots/scanned docs for filename suggestions
-- [ ] **Optional Natural-Language AI Organize:** Local Ollama or user-provided API key to propose folder structures from plain-English prompts — always routed through Dry-Run Preview & Undo
+- [x] **Windows Native OCR Rename Helper:** Built-in `Windows.Media.Ocr` (`WindowsOcrService` + `OcrNameSuggester`) integrated directly into `List Batch Rename` (*OCR Suggest*) and the `Smart OCR & AI` inspector
+- [x] **Optional Natural-Language AI Organize:** `AiOrganizePlanner` + `AiSettingsStore` supporting both 100% offline prompt+snippet matching and any OpenAI-compatible / local Ollama endpoint — always routed through Dry-Run Preview & 1-Click Undo
 
 ---
 

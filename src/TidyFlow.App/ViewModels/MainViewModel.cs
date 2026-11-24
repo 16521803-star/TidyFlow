@@ -30,6 +30,7 @@ public sealed class MainViewModel : ObservableObject
         SpaceCleaner = new SpaceCleanerViewModel(ShowStatus);
         ImageResizer = new ImageResizerViewModel(ShowStatus);
         Automation = new AutomationViewModel(_executor, _presetStore, ShowStatus, RefreshUndoState, showTrayNotification);
+        SmartAi = new SmartAiViewModel(_executor, ShowStatus, RefreshUndoState);
 
         UndoLatestCommand = new RelayCommand(UndoLatest, () => CanUndo);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
@@ -50,6 +51,8 @@ public sealed class MainViewModel : ObservableObject
     public ImageResizerViewModel ImageResizer { get; }
 
     public AutomationViewModel Automation { get; }
+
+    public SmartAiViewModel SmartAi { get; }
 
     public int ActiveTabIndex
     {

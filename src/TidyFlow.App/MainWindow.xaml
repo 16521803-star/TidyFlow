@@ -457,10 +457,16 @@
                                         <TextBlock Text="{Binding Rename.ParsedListCountText}"
                                                    VerticalAlignment="Center"
                                                    Foreground="#9CA3AF" />
-                                        <ui:Button Content="Paste Clipboard"
-                                                   Command="{Binding Rename.PasteClipboardListCommand}"
-                                                   HorizontalAlignment="Right"
-                                                   Padding="10,4" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <ui:Button Content="OCR Suggest"
+                                                       Command="{Binding Rename.SuggestNamesFromOcrCommand}"
+                                                       Margin="0,0,6,0"
+                                                       Padding="10,4"
+                                                       ToolTip="Extract text from selected images via Windows OCR to suggest filenames" />
+                                            <ui:Button Content="Paste Clipboard"
+                                                       Command="{Binding Rename.PasteClipboardListCommand}"
+                                                       Padding="10,4" />
+                                        </StackPanel>
                                     </DockPanel>
 
                                     <TextBox Grid.Row="1"
@@ -1051,6 +1057,156 @@
                                      ScrollViewer.VerticalScrollBarVisibility="Auto" />
                         </Grid>
                     </ui:Card>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 7: SMART OCR & AI -->
+            <TabItem Header="Smart OCR &amp; AI">
+                <Grid Margin="0,12,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Target Folder + Prompt -->
+                    <ui:Card Grid.Row="0" Padding="12" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="8" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="Folder:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <ui:TextBox Grid.Column="1" Text="{Binding SmartAi.FolderPath, UpdateSourceTrigger=PropertyChanged}" />
+                                <ui:Button Grid.Column="3" Content="Downloads" Command="{Binding SmartAi.SelectDownloadsCommand}" />
+                                <ui:Button Grid.Column="5" Content="Browse..." Click="BrowseSmartAiFolder_Click" />
+                                <ui:Button Grid.Column="7"
+                                           Content="Preview Smart Plan"
+                                           Appearance="Primary"
+                                           Command="{Binding SmartAi.GeneratePreviewCommand}" />
+                            </Grid>
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Instruction:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0" />
+                                <ui:TextBox Grid.Column="1"
+                                            Text="{Binding SmartAi.PromptInstruction, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="e.g. Group invoices into Finance, videos into Media, and Dincox files into Dincox" />
+                            </Grid>
+                        </Grid>
+                    </ui:Card>
+
+                    <!-- AI Endpoint Settings & Quick Windows OCR -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.25*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:Card Grid.Column="0" Padding="12">
+                            <StackPanel>
+                                <CheckBox Content="Use External AI / Local Ollama Endpoint (uncheck for 100% offline keyword + snippet sort)"
+                                          IsChecked="{Binding SmartAi.UseExternalAiEndpoint}"
+                                          Margin="0,0,0,8" />
+
+                                <Grid IsEnabled="{Binding SmartAi.UseExternalAiEndpoint}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.5*" />
+                                        <ColumnDefinition Width="6" />
+                                        <ColumnDefinition Width="0.8*" />
+                                        <ColumnDefinition Width="6" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <ui:TextBox Grid.Column="0"
+                                                Text="{Binding SmartAi.EndpointUrl, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="http://localhost:11434/v1/chat/completions" />
+                                    <ui:TextBox Grid.Column="2"
+                                                Text="{Binding SmartAi.ModelName, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="llama3.2" />
+                                    <ui:TextBox Grid.Column="4"
+                                                Text="{Binding SmartAi.ApiKey, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="API Key (blank for Ollama)" />
+                                </Grid>
+                            </StackPanel>
+                        </ui:Card>
+
+                        <ui:Card Grid.Column="2" Padding="12">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="6" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel Grid.Row="0">
+                                    <TextBlock Text="Windows Native OCR Inspector" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    <ui:Button Content="Extract Image Text..."
+                                               Click="PickOcrImage_Click"
+                                               HorizontalAlignment="Right"
+                                               Padding="10,4" />
+                                </DockPanel>
+                                <TextBox Grid.Row="2"
+                                         Text="{Binding SmartAi.OcrExtractedText, Mode=OneWay}"
+                                         IsReadOnly="True"
+                                         Height="48"
+                                         VerticalScrollBarVisibility="Auto"
+                                         TextWrapping="Wrap"
+                                         FontFamily="Consolas" />
+                            </Grid>
+                        </ui:Card>
+                    </Grid>
+
+                    <!-- Dry-Run Preview -->
+                    <DataGrid Grid.Row="2"
+                              Style="{StaticResource PreviewGridStyle}"
+                              ItemsSource="{Binding SmartAi.PreviewRows}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              RowStyle="{StaticResource PreviewRowStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110" />
+                            <DataGridTextColumn Header="Source File" Binding="{Binding SourceName}" Width="1.2*" />
+                            <DataGridTextColumn Header="Proposed Destination" Binding="{Binding TargetDisplay}" Width="1.4*" />
+                            <DataGridTextColumn Header="Reason" Binding="{Binding Note}" Width="1.3*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="3" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding SmartAi.PreviewSummary}" VerticalAlignment="Center" FontWeight="Medium" />
+                        <ui:Button Grid.Column="1"
+                                   Content="Apply Smart Plan"
+                                   Appearance="Primary"
+                                   Padding="18,8"
+                                   Click="ApplySmartAi_Click"
+                                   IsEnabled="{Binding SmartAi.CanApply}" />
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -54,6 +54,7 @@ public sealed class RenameViewModel : ObservableObject
         RemoveSelectedCommand = new RelayCommand(RemoveSelectedFile, () => SelectedFileItem is not null);
         ClearFilesCommand = new RelayCommand(ClearFiles, () => Files.Count > 0);
         PasteClipboardListCommand = new RelayCommand(PasteClipboardList);
+        SuggestNamesFromOcrCommand = new RelayCommand(SuggestNamesFromOcrAsync, () => Files.Count > 0);
         SaveCurrentListCommand = new RelayCommand(SaveCurrentListPreset, () => !string.IsNullOrWhiteSpace(NewListPresetName) && !string.IsNullOrWhiteSpace(RawNameListText));
         DeleteSavedListCommand = new RelayCommand(DeleteSelectedSavedList, () => SelectedSavedList is not null);
         ClearOutputFolderCommand = new RelayCommand(() => OutputFolderPath = string.Empty, () => !string.IsNullOrWhiteSpace(OutputFolderPath));
@@ -77,6 +78,7 @@ public sealed class RenameViewModel : ObservableObject
     public RelayCommand RemoveSelectedCommand { get; }
     public RelayCommand ClearFilesCommand { get; }
     public RelayCommand PasteClipboardListCommand { get; }
+    public RelayCommand SuggestNamesFromOcrCommand { get; }
     public RelayCommand SaveCurrentListCommand { get; }
     public RelayCommand DeleteSavedListCommand { get; }
     public RelayCommand ClearOutputFolderCommand { get; }
@@ -496,6 +498,47 @@ public sealed class RenameViewModel : ObservableObject
         {
             RawNameListText = Clipboard.GetText();
         }
+    }
+
+    private async void SuggestNamesFromOcrAsync()
+    {
+        if (Files.Count == 0)
+        {
+            return;
+        }
+
+        var suggested = new List<string>(Files.Count);
+        var recognizedCount = 0;
+
+        foreach (var item in Files)
+        {
+            var ext = item.Entry.Extension.ToLowerInvariant();
+            if (ext is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".tif" or ".tiff")
+            {
+                try
+                {
+                    var text = await Services.WindowsOcrService.ExtractTextAsync(item.Entry.FullPath);
+                    var stem = OcrNameSuggester.SuggestStem(text, item.Entry.NameWithoutExtension);
+                    if (!string.Equals(stem, item.Entry.NameWithoutExtension, StringComparison.Ordinal))
+                    {
+                        recognizedCount++;
+                    }
+
+                    suggested.Add(stem);
+                    continue;
+                }
+                catch
+                {
+                    // Fall back to original name if OCR fails on a single image.
+                }
+            }
+
+            suggested.Add(item.Entry.NameWithoutExtension);
+        }
+
+        RawNameListText = string.Join(Environment.NewLine, suggested);
+        UseListMode = true;
+        _notifyStatus($"Windows OCR generated name suggestions for {recognizedCount} of {Files.Count} file(s).", false);
     }
 
     private void LoadSavedLists()

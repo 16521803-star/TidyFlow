@@ -381,4 +381,54 @@ public partial class MainWindow : FluentWindow
             ViewModel.Automation.WatchFolderPath = dialog.FolderName;
         }
     }
+
+    private void BrowseSmartAiFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select folder for Smart AI Organize",
+            InitialDirectory = Directory.Exists(ViewModel.SmartAi.FolderPath)
+                ? ViewModel.SmartAi.FolderPath
+                : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.SmartAi.FolderPath = dialog.FolderName;
+        }
+    }
+
+    private void PickOcrImage_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Select image for Windows Native OCR",
+            Filter = "Images|*.png;*.jpg;*.jpeg;*.bmp;*.tif;*.tiff|All Files|*.*"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.SmartAi.RunOcrOnImageAsync(dialog.FileName);
+        }
+    }
+
+    private void ApplySmartAi_Click(object sender, RoutedEventArgs e)
+    {
+        var plan = ViewModel.SmartAi.CurrentPlan;
+        if (plan is null || plan.ReadyCount == 0)
+        {
+            return;
+        }
+
+        var confirm = System.Windows.MessageBox.Show(
+            $"Apply {plan.ReadyCount} Smart Organize operation(s) from the Dry-Run Preview?",
+            "Confirm Smart Organize",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Question);
+
+        if (confirm == System.Windows.MessageBoxResult.Yes && ViewModel.SmartAi.ApplyCommand.CanExecute(null))
+        {
+            ViewModel.SmartAi.ApplyCommand.Execute(null);
+        }
+    }
 }

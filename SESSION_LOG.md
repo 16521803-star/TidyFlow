@@ -60,11 +60,13 @@
 - **Phase 4.0 & 4.1 (`v0.4.0`)** — commit `157a239` (tag `v0.4.0` pushed):
   - Created `assets/logo.png` and `assets/tidyflow.ico`; embedded across `.csproj`, `MainWindow`, `README.md`, `Program.cs`, and Velopack `TidyFlow-win-Setup.exe`.
   - Added `RuleMatchLogic` (`MatchAny`/`MatchAll`), `MinimumAgeDays`, `DuplicateFinder.cs`, `SpaceCleaner.cs`, `RecycleBinService.cs`, and UI tabs (`Duplicate Finder`, `Space Cleaner`).
-- **Phase 4.2 (`v0.5.0` — Automation, Media & Explorer Integration):**
-  - Core (`TidyFlow.Core`): Added `ExifDateReader.cs` (pure C# JPEG EXIF `DateTaken` parser integrated into `ByDate` organize & `{exif_date}` rename), `FolderWatchService.cs` (debounced `FileSystemWatcher` + Undo), and `ImageResizePlanner.cs`.
-  - App (`TidyFlow.App`): Added `ImageResizerService.cs` (WIC bitmap scaling/encoding), `ExplorerContextMenuService.cs` (`HKCU\Software\Classes` per-user context menu + `--organize`/`--rename` CLI args in `Program.cs`), `TrayIconService.cs` (`NotifyIcon` with Watch Folder controls & notifications), `ImageResizerViewModel.cs`, `AutomationViewModel.cs`, and UI tabs (`Image Resizer`, `Automation & Tools`).
+- **Phase 4.2 (`v0.5.0`)** — commit `352f0c2` (tag `v0.5.0` pushed):
+  - Core (`TidyFlow.Core`): Added `ExifDateReader.cs`, `FolderWatchService.cs`, and `ImageResizePlanner.cs`.
+  - App (`TidyFlow.App`): Added `ImageResizerService.cs`, `ExplorerContextMenuService.cs`, `TrayIconService.cs`, `ImageResizerViewModel.cs`, `AutomationViewModel.cs`, and UI tabs (`Image Resizer`, `Automation & Tools`).
+- **Phase 4.3 (`v0.6.0` — Windows Native OCR & AI Smart Organize):**
+  - Core (`TidyFlow.Core`): Added `OcrNameSuggester.cs`, `AiOrganizeModels.cs`, `AiOrganizePlanner.cs` (OpenAI-compatible / Ollama endpoint + offline prompt & text-snippet fallback), `AiSettingsStore.cs`, and `SmartAndOcrTests.cs`.
+  - App (`TidyFlow.App`): Upgraded target to `net8.0-windows10.0.19041.0` for `Windows.Media.Ocr`, added `WindowsOcrService.cs`, `SuggestNamesFromOcrCommand` in `RenameViewModel`, `SmartAiViewModel.cs`, and **Tab 7 (`Smart OCR & AI`)** in `MainWindow.xaml`.
 
 ### Next Steps
-1. Test `publish\installer\TidyFlow-win-Setup.exe` (`v0.5.0`) or `publish\TidyFlow.App.exe`.
-2. Push tag `v0.5.0` (`git tag v0.5.0 && git push origin v0.5.0`) when ready to release `v0.5.0` on GitHub Releases.
-3. Next planned milestone: **Phase 4.3 (`v0.6.0`)** — Windows Native OCR (`Windows.Media.Ocr`) + optional AI Smart Organize.
+1. Test `publish\installer\TidyFlow-win-Setup.exe` (`v0.6.0`) or `publish\TidyFlow.App.exe`.
+2. Push tag `v0.6.0` (`git tag v0.6.0 && git push origin v0.6.0`) whenever ready to publish the `v0.6.0` GitHub Release.

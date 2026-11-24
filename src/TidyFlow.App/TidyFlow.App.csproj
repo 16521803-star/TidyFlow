@@ -20,14 +20,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>TidyFlow.App.Program</StartupObject>
     <ApplicationIcon>..\..\assets\tidyflow.ico</ApplicationIcon>
-    <Version>0.5.0</Version>
+    <Version>0.6.0</Version>
     <AssemblyTitle>TidyFlow</AssemblyTitle>
     <Product>TidyFlow</Product>
     <Authors>Thang Huynh</Authors>
