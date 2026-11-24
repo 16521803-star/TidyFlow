@@ -38,7 +38,7 @@
   - `src/TidyFlow.Core/TidyFlow.Core.csproj` (`net8.0`)
   - `src/TidyFlow.App/TidyFlow.App.csproj` (`net8.0-windows`, `WPF-UI 4.3.0`, references `TidyFlow.Core`)
   - `tests/TidyFlow.Core.Tests/TidyFlow.Core.Tests.csproj` (`net8.0`, xUnit, references `TidyFlow.Core`)
-- Implemented **Phase 1 (`TidyFlow.Core`)** & unit tests (`tests/TidyFlow.Core.Tests`):
+- Implemented **Phase 1 (`TidyFlow.Core`)** & unit tests (`tests/TidyFlow.Core.Tests`) — commit `b406ec7`:
   - Models: `FileEntry.cs`, `OperationPlan.cs`
   - Scanning: `FolderScanOptions.cs`, `FolderScanner.cs`
   - Organizing: `FileCategoryRegistry.cs`, `OrganizeOptions.cs`, `FolderOrganizer.cs`
@@ -46,7 +46,11 @@
   - Safety & Execution: `ConflictResolver.cs`, `TransactionModels.cs`, `BatchExecutor.cs` (two-phase staging for cyclic/case-only renames + JSON Undo history)
   - Presets: `PresetStore.cs`
   - Tests: `TempTestWorkspace.cs`, `FolderScannerTests.cs`, `FolderOrganizerTests.cs`, `BatchRenamerTests.cs`, `BatchExecutorTests.cs`
+- Implemented **Phase 2 (`TidyFlow.App` with WPF-UI 4.3.0)**:
+  - `Models/PreviewOperationRow.cs`, `ViewModels/ObservableObject.cs`, `ViewModels/OrganizeViewModel.cs`, `ViewModels/RenameViewModel.cs`, `ViewModels/MainViewModel.cs`
+  - `App.xaml` (Dark/Light `ThemesDictionary` + `ControlsDictionary`), `MainWindow.xaml` & `MainWindow.xaml.cs` (`FluentWindow` with Mica backdrop, `Organize Folder` tab, `List Batch Rename` tab, Explorer drag & drop, live Dry-Run preview grids, confirmation dialogs, saved presets/lists, and header Undo button).
 - Verified `dotnet build TidyFlow.sln --configuration Release` (`0 Warning(s), 0 Error(s)`) and `dotnet test TidyFlow.sln --no-build --configuration Release` (`11/11` passed).
 
 ### Next Steps
-1. Begin **Phase 2 (`TidyFlow.App`)**: Build the Fluent WPF-UI desktop interface (Organize Folder tab, List-Based Batch Rename tab with drag-drop/reordering & clipboard list paste, Live Preview grid, and 1-Click Undo).
+1. Launch & visually test `dotnet run --project src/TidyFlow.App` locally on Windows.
+2. Begin **Phase 3 (Open-Source Release & Auto-Updates)**: Add GitHub Actions Release workflow (`v*` tags) + Velopack in-app auto-updater + polished `README.md`.

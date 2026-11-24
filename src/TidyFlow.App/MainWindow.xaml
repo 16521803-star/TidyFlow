@@ -1,12 +1,506 @@
-﻿<Window x:Class="TidyFlow.App.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TidyFlow.App"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+﻿<ui:FluentWindow x:Class="TidyFlow.App.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:coreModels="clr-namespace:TidyFlow.Core.Models;assembly=TidyFlow.Core"
+                 mc:Ignorable="d"
+                 Title="TidyFlow — Smart Folder Organizer &amp; List Renamer"
+                 Width="1180"
+                 Height="780"
+                 MinWidth="960"
+                 MinHeight="640"
+                 WindowStartupLocation="CenterScreen"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
+        <Style x:Key="PreviewRowStyle" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="{x:Static coreModels:OperationStatus.Skipped}">
+                    <Setter Property="Opacity" Value="0.58" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="{x:Static coreModels:OperationStatus.ConflictResolved}">
+                    <Setter Property="Foreground" Value="#FBBF24" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="{x:Static coreModels:OperationStatus.Error}">
+                    <Setter Property="Foreground" Value="#F87171" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Fluent Title Bar -->
+        <ui:TitleBar Grid.Row="0" Title="TidyFlow" ShowMaximize="True" ShowMinimize="True">
+            <ui:TitleBar.Header>
+                <StackPanel Orientation="Horizontal" Margin="12,0,12,0" VerticalAlignment="Center">
+                    <ui:Button Content="{Binding UndoButtonText}"
+                               Command="{Binding UndoLatestCommand}"
+                               Appearance="Secondary"
+                               Padding="10,5"
+                               Margin="0,0,8,0"
+                               ToolTip="Restore files from the most recent batch operation" />
+                    <ui:Button Content="{Binding ThemeButtonText}"
+                               Command="{Binding ToggleThemeCommand}"
+                               Appearance="Transparent"
+                               Padding="10,5" />
+                </StackPanel>
+            </ui:TitleBar.Header>
+        </ui:TitleBar>
+
+        <!-- Feedback Banner -->
+        <ui:InfoBar Grid.Row="1"
+                    Margin="16,4,16,8"
+                    Title="{Binding StatusTitle}"
+                    Message="{Binding StatusMessage}"
+                    Severity="{Binding StatusSeverity}"
+                    IsOpen="{Binding IsStatusOpen, Mode=TwoWay}"
+                    IsClosable="True" />
+
+        <!-- Main Workspace Tabs -->
+        <TabControl Grid.Row="2" Margin="16,0,16,16">
+            <!-- TAB 1: ORGANIZE FOLDER -->
+            <TabItem Header="Organize Folder">
+                <Grid Margin="0,12,0,0" AllowDrop="True" Drop="OrganizeArea_Drop" DragOver="Files_DragOver">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Folder Selection Bar -->
+                    <ui:Card Grid.Row="0" Padding="14" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Target Folder:"
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,10,0" />
+
+                            <ui:TextBox Grid.Column="1"
+                                        Text="{Binding Organize.FolderPath, UpdateSourceTrigger=PropertyChanged}"
+                                        PlaceholderText="Choose or drop a folder here (e.g. Downloads)"
+                                        Margin="0,0,8,0" />
+
+                            <ui:Button Grid.Column="2"
+                                       Content="Downloads"
+                                       Command="{Binding Organize.SelectDownloadsCommand}"
+                                       Margin="0,0,6,0" />
+
+                            <ui:Button Grid.Column="3"
+                                       Content="Browse..."
+                                       Click="BrowseOrganizeFolder_Click"
+                                       Margin="0,0,6,0" />
+
+                            <ui:Button Grid.Column="4"
+                                       Content="Scan &amp; Preview"
+                                       Appearance="Primary"
+                                       Command="{Binding Organize.ScanAndPreviewCommand}" />
+                        </Grid>
+                    </ui:Card>
+
+                    <!-- Grouping Options & Custom Rules -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.15*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="1.35*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Options Card -->
+                        <ui:Card Grid.Column="0" Padding="14" VerticalAlignment="Stretch">
+                            <StackPanel>
+                                <TextBlock Text="Grouping Options" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,10" />
+
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Mode:" VerticalAlignment="Center" />
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding Organize.AvailableModes}"
+                                              SelectedItem="{Binding Organize.SelectedMode}" />
+                                </Grid>
+
+                                <Grid Margin="0,0,0,8" Visibility="{Binding Organize.IsDateMode, Converter={StaticResource BoolToVis}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Date Format:" VerticalAlignment="Center" />
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding Organize.AvailableDateFormats}"
+                                              SelectedItem="{Binding Organize.SelectedDateFormat}" />
+                                </Grid>
+
+                                <CheckBox Content="Ignore active browser downloads (.crdownload, .part, .tmp)"
+                                          IsChecked="{Binding Organize.IgnoreActiveDownloads}"
+                                          Margin="0,4,0,4" />
+                                <CheckBox Content="Include subdirectories"
+                                          IsChecked="{Binding Organize.IncludeSubdirectories}" />
+                            </StackPanel>
+                        </ui:Card>
+
+                        <!-- Custom Keyword / Extension Rules Card -->
+                        <ui:Card Grid.Column="2" Padding="14" VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                           Text="Custom Rules (Saved Automatically)"
+                                           FontWeight="SemiBold"
+                                           FontSize="14"
+                                           Margin="0,0,0,8" />
+
+                                <Grid Grid.Row="1" Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="0.8*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <ui:TextBox Grid.Column="0"
+                                                Text="{Binding Organize.NewRuleFolder, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="Folder (e.g. Finance)" />
+                                    <ui:TextBox Grid.Column="2"
+                                                Text="{Binding Organize.NewRuleKeywords, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="Keywords (invoice, bill)" />
+                                    <ui:TextBox Grid.Column="4"
+                                                Text="{Binding Organize.NewRuleExtensions, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="Ext (.pdf)" />
+                                    <ui:Button Grid.Column="6"
+                                               Content="Add Rule"
+                                               Command="{Binding Organize.AddRuleCommand}" />
+                                </Grid>
+
+                                <ListBox Grid.Row="2"
+                                         ItemsSource="{Binding Organize.CustomRules}"
+                                         MaxHeight="82"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" VerticalAlignment="Center">
+                                                    <Run Text="{Binding TargetFolder, Mode=OneWay}" FontWeight="SemiBold" />
+                                                    <Run Text="  |  Keywords: " Foreground="#9CA3AF" />
+                                                    <Run Text="{Binding KeywordsCsv, Mode=OneWay}" />
+                                                    <Run Text="  |  Ext: " Foreground="#9CA3AF" />
+                                                    <Run Text="{Binding ExtensionsCsv, Mode=OneWay}" />
+                                                </TextBlock>
+                                                <ui:Button Grid.Column="1"
+                                                           Content="Remove"
+                                                           Appearance="Transparent"
+                                                           Padding="8,2"
+                                                           Command="{Binding DataContext.Organize.RemoveRuleCommand, RelativeSource={RelativeSource AncestorType=TabControl}}"
+                                                           CommandParameter="{Binding}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </ui:Card>
+                    </Grid>
+
+                    <!-- Dry-Run Preview Grid -->
+                    <DataGrid Grid.Row="2"
+                              ItemsSource="{Binding Organize.PreviewRows}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              RowStyle="{StaticResource PreviewRowStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="120" />
+                            <DataGridTextColumn Header="Source File" Binding="{Binding SourceName}" Width="1.2*" />
+                            <DataGridTextColumn Header="Destination (Relative)" Binding="{Binding TargetDisplay}" Width="1.5*" />
+                            <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="1.2*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Bottom Action Bar -->
+                    <Grid Grid.Row="3" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Organize.PreviewSummary}"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Medium" />
+
+                        <ui:Button Grid.Column="1"
+                                   Content="Apply Organize"
+                                   Appearance="Primary"
+                                   Padding="18,8"
+                                   Click="ApplyOrganize_Click"
+                                   IsEnabled="{Binding Organize.CanApply}" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: LIST BATCH RENAME -->
+            <TabItem Header="List Batch Rename">
+                <Grid Margin="0,12,0,0" AllowDrop="True" Drop="RenameArea_Drop" DragOver="Files_DragOver">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.15*" />
+                        <RowDefinition Height="10" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Top Split: Ordered Files (Left) & Name List / Options (Right) -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.15*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Ordered Files -->
+                        <ui:Card Grid.Column="0" Padding="12" VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                                    <TextBlock Text="1. Selected Files (Drag &amp; Drop from Explorer or Add)"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <ui:Button Content="Add Files..." Click="AddRenameFiles_Click" Margin="0,0,6,0" Padding="10,4" />
+                                        <ui:Button Content="From Folder..." Click="AddRenameFolder_Click" Padding="10,4" />
+                                    </StackPanel>
+                                </DockPanel>
+
+                                <ListBox Grid.Row="1"
+                                         ItemsSource="{Binding Rename.Files}"
+                                         SelectedItem="{Binding Rename.SelectedFileItem, Mode=TwoWay}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="36" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Index, StringFormat=#{0}}" Foreground="#9CA3AF" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Medium" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Grid.Column="2" Text="{Binding FolderName}" Foreground="#9CA3AF" Margin="8,0,0,0" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <WrapPanel Grid.Row="2" Margin="0,8,0,0">
+                                    <ui:Button Content="Move Up" Command="{Binding Rename.MoveUpCommand}" Margin="0,0,6,0" Padding="10,4" />
+                                    <ui:Button Content="Move Down" Command="{Binding Rename.MoveDownCommand}" Margin="0,0,6,0" Padding="10,4" />
+                                    <ui:Button Content="Sort A-Z" Command="{Binding Rename.SortByNameCommand}" Margin="0,0,6,0" Padding="10,4" />
+                                    <ui:Button Content="Sort Date" Command="{Binding Rename.SortByDateCommand}" Margin="0,0,6,0" Padding="10,4" />
+                                    <ui:Button Content="Remove" Command="{Binding Rename.RemoveSelectedCommand}" Margin="0,0,6,0" Padding="10,4" />
+                                    <ui:Button Content="Clear" Command="{Binding Rename.ClearFilesCommand}" Padding="10,4" />
+                                </WrapPanel>
+                            </Grid>
+                        </ui:Card>
+
+                        <!-- Right: Target Name List & Options -->
+                        <ui:Card Grid.Column="2" Padding="12" VerticalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Mode Switch -->
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                                    <RadioButton Content="Rename from List"
+                                                 IsChecked="{Binding Rename.UseListMode}"
+                                                 GroupName="RenameMode"
+                                                 Margin="0,0,16,0" />
+                                    <RadioButton Content="Quick Template"
+                                                 IsChecked="{Binding Rename.UseTemplateMode}"
+                                                 GroupName="RenameMode" />
+                                </StackPanel>
+
+                                <!-- List Mode Body -->
+                                <Grid Grid.Row="1" Visibility="{Binding Rename.UseListMode, Converter={StaticResource BoolToVis}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <DockPanel Grid.Row="0" Margin="0,0,0,6">
+                                        <TextBlock Text="{Binding Rename.ParsedListCountText}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#9CA3AF" />
+                                        <ui:Button Content="Paste Clipboard"
+                                                   Command="{Binding Rename.PasteClipboardListCommand}"
+                                                   HorizontalAlignment="Right"
+                                                   Padding="10,4" />
+                                    </DockPanel>
+
+                                    <TextBox Grid.Row="1"
+                                             Text="{Binding Rename.RawNameListText, UpdateSourceTrigger=PropertyChanged}"
+                                             AcceptsReturn="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             TextWrapping="NoWrap"
+                                             FontFamily="Consolas"
+                                             ToolTip="Enter or paste one target name per line (from Excel, Notepad, etc.)" />
+
+                                    <!-- Saved List Presets -->
+                                    <Grid Grid.Row="2" Margin="0,8,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="6" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="6" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <ComboBox Grid.Column="0"
+                                                  ItemsSource="{Binding Rename.SavedLists}"
+                                                  SelectedItem="{Binding Rename.SelectedSavedList}"
+                                                  DisplayMemberPath="Name"
+                                                  ToolTip="Load a saved name list" />
+                                        <ui:Button Grid.Column="2"
+                                                   Content="Del"
+                                                   Command="{Binding Rename.DeleteSavedListCommand}"
+                                                   Padding="8,4" />
+                                        <ui:TextBox Grid.Column="4"
+                                                    Text="{Binding Rename.NewListPresetName, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="Save list as..." />
+                                        <ui:Button Grid.Column="6"
+                                                   Content="Save"
+                                                   Command="{Binding Rename.SaveCurrentListCommand}"
+                                                   Padding="10,4" />
+                                    </Grid>
+                                </Grid>
+
+                                <!-- Template Mode Body -->
+                                <StackPanel Grid.Row="1" Visibility="{Binding Rename.UseTemplateMode, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Pattern ({index}, {name}, {date}, {ext}):" Margin="0,0,0,4" />
+                                    <ui:TextBox Text="{Binding Rename.TemplatePattern, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
+                                    <TextBlock Text="Find Text:" Margin="0,0,0,4" />
+                                    <ui:TextBox Text="{Binding Rename.FindText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
+                                    <TextBlock Text="Replace With:" Margin="0,0,0,4" />
+                                    <ui:TextBox Text="{Binding Rename.ReplaceText, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <!-- Shared Options -->
+                                <StackPanel Grid.Row="2" Margin="0,8,0,0">
+                                    <WrapPanel Margin="0,0,0,6">
+                                        <CheckBox Content="Keep original extension"
+                                                  IsChecked="{Binding Rename.PreserveOriginalExtension}"
+                                                  Margin="0,0,14,0" />
+                                        <CheckBox Content="Clean (1) / Copy of"
+                                                  IsChecked="{Binding Rename.CleanDuplicateMarkers}" />
+                                    </WrapPanel>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="6" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="6" />
+                                            <ColumnDefinition Width="1.3*" />
+                                        </Grid.ColumnDefinitions>
+                                        <ui:TextBox Grid.Column="0"
+                                                    Text="{Binding Rename.Prefix, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="Prefix" />
+                                        <ui:TextBox Grid.Column="2"
+                                                    Text="{Binding Rename.Suffix, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="Suffix" />
+                                        <ComboBox Grid.Column="4"
+                                                  ItemsSource="{Binding Rename.AvailableMismatchBehaviors}"
+                                                  SelectedItem="{Binding Rename.MismatchBehavior}"
+                                                  ToolTip="Behavior when fewer names than files" />
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </ui:Card>
+                    </Grid>
+
+                    <!-- Live Preview DataGrid -->
+                    <DataGrid Grid.Row="2"
+                              ItemsSource="{Binding Rename.PreviewRows}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              RowStyle="{StaticResource PreviewRowStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="120" />
+                            <DataGridTextColumn Header="Original Name" Binding="{Binding SourceName}" Width="1.2*" />
+                            <DataGridTextColumn Header="New Name (Live Preview)" Binding="{Binding TargetDisplay}" Width="1.5*" />
+                            <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="1.2*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Bottom Action Bar -->
+                    <Grid Grid.Row="3" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Rename.PreviewSummary}"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Medium" />
+
+                        <ui:Button Grid.Column="1"
+                                   Content="Apply Rename"
+                                   Appearance="Primary"
+                                   Padding="18,8"
+                                   Click="ApplyRename_Click"
+                                   IsEnabled="{Binding Rename.CanApply}" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
-</Window>
+</ui:FluentWindow>

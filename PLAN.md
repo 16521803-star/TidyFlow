@@ -68,13 +68,13 @@ TidyFlow/
 - [x] **Preset Store:** JSON persistence (`PresetStore`) for custom organize rules and saved name lists
 
 ### Phase 2 — Desktop UI (`TidyFlow.App` with WPF-UI)
-- [ ] Modern Fluent Windows 11 shell (Dark/Light theme)
-- [ ] **Organize Tab:** Pick folder (quick button for `Downloads`), choose/customize grouping rules, inspect Live Preview tree/table, Apply & Undo
-- [ ] **List Rename Tab:**
-  - Left pane: selected files (drag-and-drop from Explorer + move up/down or sort)
-  - Right pane: paste/type/load list of target names (supports Excel/Notepad newline paste)
+- [x] Modern Fluent Windows 11 shell (Dark/Light theme toggle + Mica backdrop + InfoBar feedback)
+- [x] **Organize Tab:** Pick folder (quick button for `Downloads` + Drag & Drop), choose/customize grouping rules, inspect Live Preview table, Apply (with confirmation) & 1-click Undo
+- [x] **List Rename Tab:**
+  - Left pane: selected files (drag-and-drop from Explorer, Add Files/Folder, Move Up/Down, Sort A-Z/Date)
+  - Right pane: paste/type/load list of target names (supports Excel/Notepad newline paste & Clipboard button) + Quick Template mode (`{index}`, `{name}`, Find/Replace)
   - Bottom/Live Preview grid highlighting exact `Old Name -> New Name` + conflicts
-- [ ] Saved Presets & Name Lists manager
+- [x] Saved Presets & Name Lists manager integrated with `PresetStore`
 
 ### Phase 3 — Open-Source Release & Auto-Updates
 - [ ] Integrate **Velopack** for 1-click in-app updates from GitHub Releases
