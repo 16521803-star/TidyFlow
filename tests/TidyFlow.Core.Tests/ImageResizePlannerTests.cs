@@ -30,6 +30,17 @@ public sealed class ImageResizePlannerTests
             Percentage = 25
         });
         Assert.Equal((500, 250), (w3, h3));
+
+        var (w4, h4) = ImageResizePlanner.ComputeTargetDimensions(1080, 1080, new ImageResizeOptions
+        {
+            Mode = ImageResizeMode.CropToExact,
+            TargetWidth = 1080,
+            TargetHeight = 1920
+        });
+        Assert.Equal((1080, 1920), (w4, h4));
+
+        var crop = ImageResizePlanner.ComputeCenterCropRect(1080, 1080, 1080, 1920);
+        Assert.Equal((236, 0, 608, 1080), crop);
     }
 
     [Fact]

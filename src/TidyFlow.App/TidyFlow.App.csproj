@@ -27,7 +27,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>TidyFlow.App.Program</StartupObject>
     <ApplicationIcon>..\..\assets\tidyflow.ico</ApplicationIcon>
-    <Version>0.6.0</Version>
+    <Version>0.6.1</Version>
     <AssemblyTitle>TidyFlow</AssemblyTitle>
     <Product>TidyFlow</Product>
     <Authors>Thang Huynh</Authors>

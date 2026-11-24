@@ -55,10 +55,30 @@ public sealed class ImageResizerViewModel : ObservableObject
         {
             if (SetProperty(ref _selectedMode, value))
             {
+                OnPropertyChanged(nameof(IsWidthEnabled));
+                OnPropertyChanged(nameof(IsHeightEnabled));
+                OnPropertyChanged(nameof(IsPercentageEnabled));
+                OnPropertyChanged(nameof(IsDoNotUpscaleEnabled));
                 RebuildPreview();
             }
         }
     }
+
+    public bool IsWidthEnabled => SelectedMode is ImageResizeMode.MaxWidth
+        or ImageResizeMode.FitWithinBox
+        or ImageResizeMode.CropToExact
+        or ImageResizeMode.ExactStretch;
+
+    public bool IsHeightEnabled => SelectedMode is ImageResizeMode.MaxHeight
+        or ImageResizeMode.FitWithinBox
+        or ImageResizeMode.CropToExact
+        or ImageResizeMode.ExactStretch;
+
+    public bool IsPercentageEnabled => SelectedMode == ImageResizeMode.Percentage;
+
+    public bool IsDoNotUpscaleEnabled => SelectedMode is ImageResizeMode.MaxWidth
+        or ImageResizeMode.MaxHeight
+        or ImageResizeMode.FitWithinBox;
 
     public ImageOutputFormat SelectedFormat
     {
@@ -222,9 +242,19 @@ public sealed class ImageResizerViewModel : ObservableObject
                 ? Path.GetFileName(op.DestinationPath)
                 : $"{Path.GetFileName(Path.GetDirectoryName(op.DestinationPath))}\\{Path.GetFileName(op.DestinationPath)}";
 
+            var statusText = op.Status switch
+            {
+                OperationStatus.Ready => "Ready",
+                OperationStatus.ConflictResolved => "Auto-Numbered",
+                OperationStatus.Skipped => "Skipped",
+                OperationStatus.Warning => "Warning",
+                OperationStatus.Error => "Error",
+                _ => op.Status.ToString()
+            };
+
             PreviewRows.Add(new PreviewOperationRow(
                 i + 1,
-                op.Status.ToString(),
+                statusText,
                 op.Status,
                 Path.GetFileName(op.SourcePath),
                 targetDisplay,
@@ -285,6 +315,8 @@ public sealed class ImageResizerViewModel : ObservableObject
             {
                 _notifyStatus($"Resized/converted {result.ProcessedCount} image(s) successfully.", false);
             }
+
+            RebuildPreview();
         }
         finally
         {

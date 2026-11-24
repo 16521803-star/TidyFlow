@@ -121,6 +121,7 @@ public sealed class SmartAiViewModel : ObservableObject
         {
             if (SetProperty(ref _isBusy, value))
             {
+                OnPropertyChanged(nameof(CanApply));
                 RelayCommand.RaiseCanExecuteChanged();
             }
         }

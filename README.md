@@ -64,14 +64,14 @@ dotnet run --project src/TidyFlow.App
 ### Publish Portable `.exe` & Windows Installer Locally
 ```powershell
 dotnet tool install -g vpk
-.\scripts\pack-local.ps1 -Version 0.6.0
+.\scripts\pack-local.ps1 -Version 0.6.1
 ```
 
 ### Creating a New GitHub Release
 Push a version tag matching `v*` to trigger [release.yml](.github/workflows/release.yml):
 ```powershell
-git tag v0.6.0
-git push origin v0.6.0
+git tag v0.6.1
+git push origin v0.6.1
 ```
 
 ---

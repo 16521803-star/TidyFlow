@@ -8,7 +8,9 @@ public enum ImageResizeMode
     MaxWidth,
     MaxHeight,
     FitWithinBox,
-    Percentage
+    Percentage,
+    CropToExact,
+    ExactStretch
 }
 
 public enum ImageOutputFormat
@@ -73,6 +75,13 @@ public sealed class ImageResizePlanner
             return (sourceWidth, sourceHeight);
         }
 
+        if (options.Mode is ImageResizeMode.CropToExact or ImageResizeMode.ExactStretch)
+        {
+            var exactW = options.TargetWidth > 0 ? options.TargetWidth : sourceWidth;
+            var exactH = options.TargetHeight > 0 ? options.TargetHeight : sourceHeight;
+            return (Math.Max(1, exactW), Math.Max(1, exactH));
+        }
+
         double scale = options.Mode switch
         {
             ImageResizeMode.MaxWidth => options.TargetWidth > 0 ? (double)options.TargetWidth / sourceWidth : 1.0,
@@ -92,6 +101,34 @@ public sealed class ImageResizePlanner
         var w = Math.Max(1, (int)Math.Round(sourceWidth * scale));
         var h = Math.Max(1, (int)Math.Round(sourceHeight * scale));
         return (w, h);
+    }
+
+    public static (int X, int Y, int Width, int Height) ComputeCenterCropRect(
+        int sourceWidth,
+        int sourceHeight,
+        int targetWidth,
+        int targetHeight)
+    {
+        if (sourceWidth <= 0 || sourceHeight <= 0 || targetWidth <= 0 || targetHeight <= 0)
+        {
+            return (0, 0, sourceWidth, sourceHeight);
+        }
+
+        var sourceRatio = (double)sourceWidth / sourceHeight;
+        var targetRatio = (double)targetWidth / targetHeight;
+
+        if (sourceRatio > targetRatio)
+        {
+            var cropW = Math.Clamp((int)Math.Round(sourceHeight * targetRatio), 1, sourceWidth);
+            var x = (sourceWidth - cropW) / 2;
+            return (x, 0, cropW, sourceHeight);
+        }
+        else
+        {
+            var cropH = Math.Clamp((int)Math.Round(sourceWidth / targetRatio), 1, sourceHeight);
+            var y = (sourceHeight - cropH) / 2;
+            return (0, y, sourceWidth, cropH);
+        }
     }
 
     public IReadOnlyList<PlannedImageOperation> BuildPlan(
@@ -187,6 +224,8 @@ public sealed class ImageResizePlanner
             ImageResizeMode.MaxHeight => $"MaxH {options.TargetHeight}px",
             ImageResizeMode.FitWithinBox => $"Fit {options.TargetWidth}x{options.TargetHeight}",
             ImageResizeMode.Percentage => $"{options.Percentage}%",
+            ImageResizeMode.CropToExact => $"Crop {options.TargetWidth}x{options.TargetHeight}",
+            ImageResizeMode.ExactStretch => $"Stretch {options.TargetWidth}x{options.TargetHeight}",
             _ => "Original"
         };
 

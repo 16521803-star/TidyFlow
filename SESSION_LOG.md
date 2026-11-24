@@ -63,10 +63,13 @@
 - **Phase 4.2 (`v0.5.0`)** — commit `352f0c2` (tag `v0.5.0` pushed):
   - Core (`TidyFlow.Core`): Added `ExifDateReader.cs`, `FolderWatchService.cs`, and `ImageResizePlanner.cs`.
   - App (`TidyFlow.App`): Added `ImageResizerService.cs`, `ExplorerContextMenuService.cs`, `TrayIconService.cs`, `ImageResizerViewModel.cs`, `AutomationViewModel.cs`, and UI tabs (`Image Resizer`, `Automation & Tools`).
-- **Phase 4.3 (`v0.6.0` — Windows Native OCR & AI Smart Organize):**
-  - Core (`TidyFlow.Core`): Added `OcrNameSuggester.cs`, `AiOrganizeModels.cs`, `AiOrganizePlanner.cs` (OpenAI-compatible / Ollama endpoint + offline prompt & text-snippet fallback), `AiSettingsStore.cs`, and `SmartAndOcrTests.cs`.
-  - App (`TidyFlow.App`): Upgraded target to `net8.0-windows10.0.19041.0` for `Windows.Media.Ocr`, added `WindowsOcrService.cs`, `SuggestNamesFromOcrCommand` in `RenameViewModel`, `SmartAiViewModel.cs`, and **Tab 7 (`Smart OCR & AI`)** in `MainWindow.xaml`.
+- **Phase 4.3 (`v0.6.0`)** — commit `af7eda9` (tag `v0.6.0` pushed):
+  - Added `WindowsOcrService.cs`, `OcrNameSuggester.cs`, `AiOrganizePlanner.cs`, `AiSettingsStore.cs`, `SmartAiViewModel.cs`, and **Tab 7 (`Smart OCR & AI`)**.
+- **`v0.6.1` Fixes & Image Resizer Upgrades (from user screenshots):**
+  - Added `ImageResizeMode.CropToExact` (center crop to exact `W x H` without distortion) and `ImageResizeMode.ExactStretch` in `ImageResizePlanner.cs` & `ImageResizerService.cs`.
+  - Labeled `Resize Mode`, `Width (px)`, `Height (px)`, `Scale (%)`, `Format`, `Suffix` in `MainWindow.xaml` and disabled inapplicable inputs per mode; added `RebuildPreview()` after `ApplyAsync()` and fixed `DataGridCell` foreground inheritance + `Status` column width (`130px`).
+  - Fixed `Apply Smart Plan` button staying disabled (`IsBusy` now notifies `CanApply` in `SmartAiViewModel.cs`) and added instruction stopwords in `AiOrganizePlanner.BuildOfflineSmartPlan` so words like `"and"` or `"into"` are never treated as target folder names.
 
 ### Next Steps
-1. Test `publish\installer\TidyFlow-win-Setup.exe` (`v0.6.0`) or `publish\TidyFlow.App.exe`.
-2. Push tag `v0.6.0` (`git tag v0.6.0 && git push origin v0.6.0`) whenever ready to publish the `v0.6.0` GitHub Release.
+1. Test `v0.6.1` installer (`publish\installer\TidyFlow-win-Setup.exe`) or portable `.exe` (`publish\TidyFlow.App.exe`).
+2. Push `v0.6.1` tag if ready to update GitHub Releases (`git tag v0.6.1 && git push origin v0.6.1`).

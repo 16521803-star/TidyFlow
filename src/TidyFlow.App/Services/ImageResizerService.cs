@@ -1,4 +1,5 @@
 using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TidyFlow.Core.Imaging;
@@ -67,12 +68,30 @@ public static class ImageResizerService
             sourceFrame.PixelHeight,
             options);
 
-        BitmapSource outputBitmap = sourceFrame;
-        if (targetW != sourceFrame.PixelWidth || targetH != sourceFrame.PixelHeight)
+        BitmapSource workingBitmap = sourceFrame;
+
+        if (options.Mode == ImageResizeMode.CropToExact)
         {
-            var scaleX = (double)targetW / sourceFrame.PixelWidth;
-            var scaleY = (double)targetH / sourceFrame.PixelHeight;
-            var transformed = new TransformedBitmap(sourceFrame, new ScaleTransform(scaleX, scaleY));
+            var (cx, cy, cw, ch) = ImageResizePlanner.ComputeCenterCropRect(
+                sourceFrame.PixelWidth,
+                sourceFrame.PixelHeight,
+                targetW,
+                targetH);
+
+            if (cw != sourceFrame.PixelWidth || ch != sourceFrame.PixelHeight)
+            {
+                var cropped = new CroppedBitmap(sourceFrame, new Int32Rect(cx, cy, cw, ch));
+                cropped.Freeze();
+                workingBitmap = cropped;
+            }
+        }
+
+        BitmapSource outputBitmap = workingBitmap;
+        if (targetW != workingBitmap.PixelWidth || targetH != workingBitmap.PixelHeight)
+        {
+            var scaleX = (double)targetW / workingBitmap.PixelWidth;
+            var scaleY = (double)targetH / workingBitmap.PixelHeight;
+            var transformed = new TransformedBitmap(workingBitmap, new ScaleTransform(scaleX, scaleY));
             transformed.Freeze();
             outputBitmap = transformed;
         }

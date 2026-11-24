@@ -65,7 +65,7 @@ public sealed class SmartAndOcrTests
         var plan = new AiOrganizePlanner().BuildOfflineSmartPlan(
             ws.RootPath,
             files,
-            "Organize files mentioning dincox into their own folder");
+            "Group files into clean folders by topic and file type (e.g. dincox)");
 
         Assert.Equal(
             Path.Combine(ws.RootPath, "Dincox", "notes_a.txt"),
@@ -73,5 +73,22 @@ public sealed class SmartAndOcrTests
         Assert.Equal(
             Path.Combine(ws.RootPath, "Archives", "random.zip"),
             plan.Operations.Single(o => o.SourceName == "random.zip").DestinationPath);
+    }
+
+    [Fact]
+    public void AiOrganizePlanner_OfflineSmartPlan_IgnoresInstructionStopwordsLikeAnd()
+    {
+        using var ws = new TempTestWorkspace();
+        ws.CreateFile("script2.json", "{\"note\": \"clean and simple files\"}");
+
+        var files = new FolderScanner().Scan(ws.RootPath);
+        var plan = new AiOrganizePlanner().BuildOfflineSmartPlan(
+            ws.RootPath,
+            files,
+            "Group files into clean folders by topic and file type");
+
+        Assert.Equal(
+            Path.Combine(ws.RootPath, "Code", "script2.json"),
+            plan.Operations.Single().DestinationPath);
     }
 }

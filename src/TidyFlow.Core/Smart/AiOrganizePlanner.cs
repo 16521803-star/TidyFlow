@@ -20,6 +20,15 @@ public sealed class AiOrganizePlanner
         ".txt", ".md", ".json", ".csv", ".xml", ".yaml", ".yml", ".log", ".ini", ".cfg"
     };
 
+    private static readonly HashSet<string> InstructionStopwords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "group", "sort", "organize", "move", "put", "place", "clean", "folder", "folders", "file", "files",
+        "into", "from", "with", "without", "and", "the", "for", "that", "this", "their", "own", "all",
+        "topic", "topics", "type", "types", "category", "categories", "name", "names", "based", "using",
+        "use", "are", "was", "were", "have", "has", "any", "each", "etc", "mentioning", "containing",
+        "gom", "xep", "sap", "chuyen", "vao", "thu", "muc", "cac", "nhung", "theo", "cho", "cua", "voi"
+    };
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -124,9 +133,9 @@ public sealed class AiOrganizePlanner
         string userInstruction)
     {
         var tokens = (userInstruction ?? string.Empty)
-            .Split(new[] { ' ', ',', '.', ';', ':', '/', '\\', '\n', '\r', '\t', '"', '\'' }, StringSplitOptions.RemoveEmptyEntries)
+            .Split(new[] { ' ', ',', '.', ';', ':', '/', '\\', '\n', '\r', '\t', '"', '\'', '(', ')' }, StringSplitOptions.RemoveEmptyEntries)
             .Select(t => t.Trim())
-            .Where(t => t.Length >= 3)
+            .Where(t => t.Length >= 3 && !InstructionStopwords.Contains(t))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 

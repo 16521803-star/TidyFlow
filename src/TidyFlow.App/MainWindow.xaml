@@ -45,6 +45,7 @@
                     <Style TargetType="DataGridCell">
                         <Setter Property="Padding" Value="8,5" />
                         <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridRow}}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="DataGridCell">
@@ -865,44 +866,54 @@
                             </Grid.RowDefinitions>
 
                             <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="4" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1.1*" />
+                                    <ColumnDefinition Width="1.2*" />
                                     <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="0.65*" />
                                     <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="0.65*" />
                                     <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="0.55*" />
                                     <ColumnDefinition Width="8" />
                                     <ColumnDefinition Width="0.9*" />
                                     <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="0.7*" />
+                                    <ColumnDefinition Width="0.75*" />
                                 </Grid.ColumnDefinitions>
 
-                                <ComboBox Grid.Column="0"
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Resize Mode" FontSize="11" Foreground="#9CA3AF" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Width (px)" FontSize="11" Foreground="#9CA3AF" />
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text="Height (px)" FontSize="11" Foreground="#9CA3AF" />
+                                <TextBlock Grid.Row="0" Grid.Column="6" Text="Scale (%)" FontSize="11" Foreground="#9CA3AF" />
+                                <TextBlock Grid.Row="0" Grid.Column="8" Text="Format" FontSize="11" Foreground="#9CA3AF" />
+                                <TextBlock Grid.Row="0" Grid.Column="10" Text="Suffix" FontSize="11" Foreground="#9CA3AF" />
+
+                                <ComboBox Grid.Row="2" Grid.Column="0"
                                           ItemsSource="{Binding ImageResizer.AvailableModes}"
                                           SelectedItem="{Binding ImageResizer.SelectedMode}"
-                                          ToolTip="Resize mode" />
-                                <ui:TextBox Grid.Column="2"
+                                          ToolTip="CropToExact crops center to exact WxH; ExactStretch stretches to WxH" />
+                                <ui:TextBox Grid.Row="2" Grid.Column="2"
                                             Text="{Binding ImageResizer.TargetWidthText, UpdateSourceTrigger=PropertyChanged}"
-                                            PlaceholderText="Width (px)"
-                                            ToolTip="Target width (px)" />
-                                <ui:TextBox Grid.Column="4"
+                                            IsEnabled="{Binding ImageResizer.IsWidthEnabled}"
+                                            PlaceholderText="Width (px)" />
+                                <ui:TextBox Grid.Row="2" Grid.Column="4"
                                             Text="{Binding ImageResizer.TargetHeightText, UpdateSourceTrigger=PropertyChanged}"
-                                            PlaceholderText="Height (px)"
-                                            ToolTip="Target height (px)" />
-                                <ui:TextBox Grid.Column="6"
+                                            IsEnabled="{Binding ImageResizer.IsHeightEnabled}"
+                                            PlaceholderText="Height (px)" />
+                                <ui:TextBox Grid.Row="2" Grid.Column="6"
                                             Text="{Binding ImageResizer.PercentageText, UpdateSourceTrigger=PropertyChanged}"
-                                            PlaceholderText="%"
-                                            ToolTip="Percentage (for Percentage mode)" />
-                                <ComboBox Grid.Column="8"
+                                            IsEnabled="{Binding ImageResizer.IsPercentageEnabled}"
+                                            PlaceholderText="%" />
+                                <ComboBox Grid.Row="2" Grid.Column="8"
                                           ItemsSource="{Binding ImageResizer.AvailableFormats}"
-                                          SelectedItem="{Binding ImageResizer.SelectedFormat}"
-                                          ToolTip="Output image format" />
-                                <ui:TextBox Grid.Column="10"
+                                          SelectedItem="{Binding ImageResizer.SelectedFormat}" />
+                                <ui:TextBox Grid.Row="2" Grid.Column="10"
                                             Text="{Binding ImageResizer.Suffix, UpdateSourceTrigger=PropertyChanged}"
-                                            PlaceholderText="Suffix"
-                                            ToolTip="Filename suffix (e.g. _resized)" />
+                                            PlaceholderText="Suffix" />
                             </Grid>
 
                             <Grid Grid.Row="2">
@@ -919,6 +930,7 @@
                                 <CheckBox Grid.Column="0"
                                           Content="Do not upscale smaller images"
                                           IsChecked="{Binding ImageResizer.DoNotUpscale}"
+                                          IsEnabled="{Binding ImageResizer.IsDoNotUpscaleEnabled}"
                                           VerticalAlignment="Center"
                                           Margin="0,0,18,0" />
                                 <TextBlock Grid.Column="1" Text="Save to:" VerticalAlignment="Center" Margin="0,0,6,0" />
@@ -942,7 +954,7 @@
                               RowStyle="{StaticResource PreviewRowStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" />
-                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="130" />
                             <DataGridTextColumn Header="Source Image" Binding="{Binding SourceName}" Width="1.2*" />
                             <DataGridTextColumn Header="Output File" Binding="{Binding TargetDisplay}" Width="1.4*" />
                             <DataGridTextColumn Header="Operation" Binding="{Binding Note}" Width="1.1*" />
@@ -1187,7 +1199,7 @@
                               RowStyle="{StaticResource PreviewRowStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" />
-                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="130" />
                             <DataGridTextColumn Header="Source File" Binding="{Binding SourceName}" Width="1.2*" />
                             <DataGridTextColumn Header="Proposed Destination" Binding="{Binding TargetDisplay}" Width="1.4*" />
                             <DataGridTextColumn Header="Reason" Binding="{Binding Note}" Width="1.3*" />
