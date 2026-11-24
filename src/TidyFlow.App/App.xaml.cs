@@ -1,13 +1,75 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using System.IO;
 using System.Windows;
+using System.Windows.Threading;
+using Velopack;
 
 namespace TidyFlow.App;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
-}
+    private void App_OnStartup(object sender, StartupEventArgs e)
+    {
+        VelopackApp.Build().Run();
 
+        DispatcherUnhandledException += OnDispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+        try
+        {
+            var window = new MainWindow
+            {
+                WindowState = WindowState.Normal,
+                ShowInTaskbar = true
+            };
+            MainWindow = window;
+            window.Show();
+            window.Activate();
+        }
+        catch (Exception ex)
+        {
+            LogException("Startup", ex);
+            MessageBox.Show(
+                $"TidyFlow failed to start:\n\n{ex.Message}",
+                "TidyFlow Startup Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Shutdown(1);
+        }
+    }
+
+    private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        LogException("Dispatcher", e.Exception);
+        MessageBox.Show(
+            $"Unexpected UI error:\n\n{e.Exception.Message}",
+            "TidyFlow Error",
+            MessageBoxButton.OK,
+            MessageBoxImage.Error);
+        e.Handled = true;
+    }
+
+    private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        if (e.ExceptionObject is Exception ex)
+        {
+            LogException("AppDomain", ex);
+        }
+    }
+
+    private static void LogException(string source, Exception ex)
+    {
+        try
+        {
+            var dir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "TidyFlow");
+            Directory.CreateDirectory(dir);
+            var logFile = Path.Combine(dir, "app_errors.log");
+            File.AppendAllText(logFile, $"[{DateTimeOffset.Now:O}] [{source}] {ex}{Environment.NewLine}{Environment.NewLine}");
+        }
+        catch
+        {
+            // Ignore logging failures.
+        }
+    }
+}

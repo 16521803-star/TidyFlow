@@ -1,3 +1,4 @@
+using TidyFlow.App.Services;
 using TidyFlow.Core.Presets;
 using TidyFlow.Core.Safety;
 using Wpf.Ui.Appearance;
@@ -9,6 +10,7 @@ public sealed class MainViewModel : ObservableObject
 {
     private readonly BatchExecutor _executor = new();
     private readonly PresetStore _presetStore = new();
+    private readonly AppUpdateService _updateService = new();
 
     private bool _isDarkTheme = true;
     private bool _isStatusOpen;
@@ -17,6 +19,7 @@ public sealed class MainViewModel : ObservableObject
     private InfoBarSeverity _statusSeverity = InfoBarSeverity.Informational;
     private string _undoButtonText = "Undo Last";
     private bool _canUndo;
+    private bool _isCheckingUpdates;
 
     public MainViewModel()
     {
@@ -25,6 +28,7 @@ public sealed class MainViewModel : ObservableObject
 
         UndoLatestCommand = new RelayCommand(UndoLatest, () => CanUndo);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
+        CheckUpdatesCommand = new RelayCommand(CheckUpdatesAsync, () => !IsCheckingUpdates);
         DismissStatusCommand = new RelayCommand(() => IsStatusOpen = false);
 
         RefreshUndoState();
@@ -36,7 +40,25 @@ public sealed class MainViewModel : ObservableObject
 
     public RelayCommand UndoLatestCommand { get; }
     public RelayCommand ToggleThemeCommand { get; }
+    public RelayCommand CheckUpdatesCommand { get; }
     public RelayCommand DismissStatusCommand { get; }
+
+    public string AppVersionText => _updateService.CurrentVersionDisplay;
+
+    public bool IsCheckingUpdates
+    {
+        get => _isCheckingUpdates;
+        private set
+        {
+            if (SetProperty(ref _isCheckingUpdates, value))
+            {
+                OnPropertyChanged(nameof(UpdateButtonText));
+                RelayCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public string UpdateButtonText => IsCheckingUpdates ? "Checking..." : $"Updates ({AppVersionText})";
 
     public bool IsStatusOpen
     {
@@ -111,6 +133,28 @@ public sealed class MainViewModel : ObservableObject
         }
 
         Organize.ScanAndPreview();
+    }
+
+    private async void CheckUpdatesAsync()
+    {
+        if (IsCheckingUpdates)
+        {
+            return;
+        }
+
+        IsCheckingUpdates = true;
+        try
+        {
+            var outcome = await _updateService.CheckAndDownloadAsync();
+            StatusTitle = outcome.UpdateAvailable ? "Update Ready" : "Updates";
+            StatusMessage = outcome.Message;
+            StatusSeverity = outcome.UpdateAvailable ? InfoBarSeverity.Success : InfoBarSeverity.Informational;
+            IsStatusOpen = true;
+        }
+        finally
+        {
+            IsCheckingUpdates = false;
+        }
     }
 
     private void ShowStatus(string message, bool isError)

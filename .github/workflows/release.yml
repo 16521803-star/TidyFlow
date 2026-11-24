@@ -1,0 +1,77 @@
+name: Release Windows Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (without v prefix, e.g. 0.3.0)'
+        required: true
+        default: '0.3.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Resolve Version
+        id: ver
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $v = "${{ inputs.version }}"
+          } else {
+            $v = "${{ github.ref_name }}" -replace '^v', ''
+          }
+          echo "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Restore & Test
+        run: |
+          dotnet restore
+          dotnet test TidyFlow.sln --configuration Release
+
+      - name: Publish Portable Single-File EXE
+        shell: pwsh
+        run: |
+          dotnet publish src/TidyFlow.App/TidyFlow.App.csproj `
+            -c Release -r win-x64 --self-contained true `
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:Version=${{ steps.ver.outputs.version }} `
+            -o artifacts/portable
+          Copy-Item artifacts/portable/TidyFlow.App.exe artifacts/TidyFlow-win-x64-portable.exe
+
+      - name: Install Velopack CLI & Pack Installer
+        shell: pwsh
+        run: |
+          dotnet tool install -g vpk
+          dotnet publish src/TidyFlow.App/TidyFlow.App.csproj `
+            -c Release -r win-x64 --self-contained true `
+            -p:Version=${{ steps.ver.outputs.version }} `
+            -o artifacts/velopack-src
+          vpk pack `
+            --packId TidyFlow `
+            --packVersion ${{ steps.ver.outputs.version }} `
+            --packDir artifacts/velopack-src `
+            --mainExe TidyFlow.App.exe `
+            --outputDir artifacts/releases
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/TidyFlow-win-x64-portable.exe
+            artifacts/releases/*
+          generate_release_notes: true

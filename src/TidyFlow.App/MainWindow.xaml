@@ -13,7 +13,8 @@
                  MinHeight="640"
                  WindowStartupLocation="CenterScreen"
                  ExtendsContentIntoTitleBar="True"
-                 WindowBackdropType="Mica">
+                 WindowBackdropType="None"
+                 Background="{DynamicResource ApplicationBackgroundBrush}">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
@@ -49,6 +50,12 @@
                                Padding="10,5"
                                Margin="0,0,8,0"
                                ToolTip="Restore files from the most recent batch operation" />
+                    <ui:Button Content="{Binding UpdateButtonText}"
+                               Command="{Binding CheckUpdatesCommand}"
+                               Appearance="Transparent"
+                               Padding="10,5"
+                               Margin="0,0,6,0"
+                               ToolTip="Check GitHub Releases for app updates" />
                     <ui:Button Content="{Binding ThemeButtonText}"
                                Command="{Binding ToggleThemeCommand}"
                                Appearance="Transparent"

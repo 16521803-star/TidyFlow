@@ -77,9 +77,9 @@ TidyFlow/
 - [x] Saved Presets & Name Lists manager integrated with `PresetStore`
 
 ### Phase 3 — Open-Source Release & Auto-Updates
-- [ ] Integrate **Velopack** for 1-click in-app updates from GitHub Releases
-- [ ] Add GitHub Actions Release workflow triggered on `v*` tags
-- [ ] Write user-facing `README.md` with screenshots, download guide, and contribution notes
+- [x] Integrate **Velopack** (`1.2.161`) for 1-click in-app updates from GitHub Releases (`AppUpdateService` + `Updates` header button)
+- [x] Add GitHub Actions Release workflow (`.github/workflows/release.yml`) triggered on `v*` tags (builds portable single-file `.exe` + Velopack `vpk pack` installer)
+- [x] Write user-facing `README.md` with download guide, build steps, and release tag instructions
 
 ### Phase 4 — Future Upgrades (Post-v1.0)
 - [ ] Optional **Watch Folder** mode (System Tray background auto-tidy for `Downloads`)

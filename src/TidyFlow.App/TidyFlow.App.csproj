@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Velopack" Version="1.2.161" />
     <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
 
@@ -14,6 +15,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <Version>0.3.0</Version>
+    <AssemblyTitle>TidyFlow</AssemblyTitle>
+    <Product>TidyFlow</Product>
+    <Authors>Thang Huynh</Authors>
+    <Description>Smart Windows folder organizer and list-based batch file renamer</Description>
   </PropertyGroup>
 
 </Project>
