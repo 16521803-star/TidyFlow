@@ -94,4 +94,32 @@ public sealed class BatchExecutorTests
         Assert.Single(loaded.SavedNameLists);
         Assert.Equal(new[] { "Jan", "Feb", "Mar" }, loaded.SavedNameLists[0].Items);
     }
+
+    [Fact]
+    public void ExecuteAndUndoLatest_RenameWithOutputDirectory_MovesAndRestoresFiles()
+    {
+        using var ws = new TempTestWorkspace();
+        var srcPath = ws.CreateFile("clip1.mp4", "video-data");
+        var outputDir = Path.Combine(ws.RootPath, "Exported");
+
+        var files = new FolderScanner().Scan(ws.RootPath);
+        var plan = new BatchRenamer().BuildListRenamePlan(files, new ListRenameOptions
+        {
+            TargetNames = new[] { "Final_Clip" },
+            OutputDirectory = outputDir
+        });
+
+        var executor = new BatchExecutor(ws.HistoryPath);
+        var execResult = executor.Execute(plan);
+
+        Assert.Equal(1, execResult.AppliedCount);
+        Assert.True(File.Exists(Path.Combine(outputDir, "Final_Clip.mp4")));
+        Assert.False(File.Exists(srcPath));
+
+        var undoResult = executor.UndoLatest();
+
+        Assert.Equal(1, undoResult.RestoredCount);
+        Assert.True(File.Exists(srcPath));
+        Assert.False(Directory.Exists(outputDir));
+    }
 }

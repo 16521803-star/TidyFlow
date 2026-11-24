@@ -86,4 +86,23 @@ public sealed class BatchRenamerTests
         Assert.Equal("01_Invoice.pdf", plan.Operations[0].DestinationName);
         Assert.Equal("02_Receipt.pdf", plan.Operations[1].DestinationName);
     }
+
+    [Fact]
+    public void BuildListRenamePlan_WithOutputDirectory_PlansMoveAndRenameToTargetFolder()
+    {
+        using var ws = new TempTestWorkspace();
+        ws.CreateFile("raw1.mp4");
+        var outputDir = Path.Combine(ws.RootPath, "RenamedVideos");
+
+        var files = new FolderScanner().Scan(ws.RootPath);
+        var plan = new BatchRenamer().BuildListRenamePlan(files, new ListRenameOptions
+        {
+            TargetNames = new[] { "Intro Clip" },
+            OutputDirectory = outputDir
+        });
+
+        var op = Assert.Single(plan.Operations);
+        Assert.Equal(OperationKind.MoveAndRename, op.Kind);
+        Assert.Equal(Path.Combine(outputDir, "Intro Clip.mp4"), op.DestinationPath);
+    }
 }

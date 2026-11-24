@@ -99,11 +99,12 @@ public sealed class BatchRenamer
                 continue;
             }
 
-            var destinationPath = Path.Combine(file.DirectoryPath, finalFileName);
+            var (targetDir, opKind) = ResolveDestinationTarget(file, options.OutputDirectory);
+            var destinationPath = Path.Combine(targetDir, finalFileName);
             proposals.Add(new ProposedOperation(
                 file.FullPath,
                 destinationPath,
-                OperationKind.Rename,
+                opKind,
                 InitialNote: fallbackNote));
         }
 
@@ -158,14 +159,33 @@ public sealed class BatchRenamer
                 continue;
             }
 
-            var destinationPath = Path.Combine(file.DirectoryPath, $"{sanitizedStem}{file.Extension}");
-            proposals.Add(new ProposedOperation(file.FullPath, destinationPath, OperationKind.Rename));
+            var (targetDir, opKind) = ResolveDestinationTarget(file, options.OutputDirectory);
+            var destinationPath = Path.Combine(targetDir, $"{sanitizedStem}{file.Extension}");
+            proposals.Add(new ProposedOperation(file.FullPath, destinationPath, opKind));
         }
 
         return _conflictResolver.Resolve(
             proposals,
             $"Template rename for {orderedFiles.Count} file(s)",
             options.DuplicateBehavior);
+    }
+
+    private static (string DirectoryPath, OperationKind Kind) ResolveDestinationTarget(
+        FileEntry file,
+        string? outputDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(outputDirectory))
+        {
+            return (file.DirectoryPath, OperationKind.Rename);
+        }
+
+        var trimmed = outputDirectory.Trim();
+        var sameDir = string.Equals(
+            Path.GetFullPath(trimmed).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+            Path.GetFullPath(file.DirectoryPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+            OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+
+        return sameDir ? (file.DirectoryPath, OperationKind.Rename) : (trimmed, OperationKind.MoveAndRename);
     }
 
     private static string BuildTargetFileName(

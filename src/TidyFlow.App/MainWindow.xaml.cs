@@ -81,6 +81,22 @@ public partial class MainWindow : FluentWindow
         }
     }
 
+    private void BrowseRenameOutputFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select destination folder for renamed files",
+            InitialDirectory = Directory.Exists(ViewModel.Rename.OutputFolderPath)
+                ? ViewModel.Rename.OutputFolderPath
+                : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.Rename.OutputFolderPath = dialog.FolderName;
+        }
+    }
+
     private void ApplyRename_Click(object sender, RoutedEventArgs e)
     {
         var plan = ViewModel.Rename.CurrentPlan;

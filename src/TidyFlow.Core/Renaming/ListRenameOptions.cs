@@ -31,6 +31,8 @@ public sealed record ListRenameOptions
 
     public DuplicateNameBehavior DuplicateBehavior { get; init; } = DuplicateNameBehavior.AutoNumberSuffix;
 
+    public string? OutputDirectory { get; init; }
+
     public static IReadOnlyList<string> ParseRawNameList(string? rawText, bool ignoreBlankLines = true)
     {
         if (string.IsNullOrEmpty(rawText))
@@ -75,4 +77,6 @@ public sealed record TemplateRenameOptions
     public string InvalidCharReplacement { get; init; } = "_";
 
     public DuplicateNameBehavior DuplicateBehavior { get; init; } = DuplicateNameBehavior.AutoNumberSuffix;
+
+    public string? OutputDirectory { get; init; }
 }

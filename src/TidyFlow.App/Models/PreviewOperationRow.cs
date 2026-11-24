@@ -16,9 +16,11 @@ public sealed record PreviewOperationRow(
         PlannedFileOperation op,
         string? baseDirectoryForRelativeTarget = null)
     {
-        var targetDisplay = string.IsNullOrWhiteSpace(baseDirectoryForRelativeTarget)
-            ? op.DestinationName
-            : Path.GetRelativePath(baseDirectoryForRelativeTarget, op.DestinationPath);
+        var targetDisplay = op.Kind == OperationKind.MoveAndRename && op.WillModify
+            ? $"{Path.GetFileName(Path.GetDirectoryName(op.DestinationPath))}\\{op.DestinationName}"
+            : string.IsNullOrWhiteSpace(baseDirectoryForRelativeTarget)
+                ? op.DestinationName
+                : Path.GetRelativePath(baseDirectoryForRelativeTarget, op.DestinationPath);
 
         var statusText = op.Status switch
         {

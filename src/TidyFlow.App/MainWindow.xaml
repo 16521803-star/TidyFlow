@@ -7,10 +7,10 @@
                  xmlns:coreModels="clr-namespace:TidyFlow.Core.Models;assembly=TidyFlow.Core"
                  mc:Ignorable="d"
                  Title="TidyFlow — Smart Folder Organizer &amp; List Renamer"
-                 Width="1180"
-                 Height="780"
-                 MinWidth="960"
-                 MinHeight="640"
+                 Width="1120"
+                 Height="720"
+                 MinWidth="940"
+                 MinHeight="600"
                  WindowStartupLocation="CenterScreen"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="None"
@@ -18,8 +18,53 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-        <Style x:Key="PreviewRowStyle" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+        <Style x:Key="PreviewGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+            <Setter Property="RowBackground" Value="Transparent" />
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <Setter Property="Padding" Value="10,7" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource DividerStrokeColorDefaultBrush}" />
+                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="8,5" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Padding="{TemplateBinding Padding}" Background="Transparent">
+                                        <ContentPresenter VerticalAlignment="Center" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PreviewRowStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+                </Trigger>
                 <DataTrigger Binding="{Binding Status}" Value="{x:Static coreModels:OperationStatus.Skipped}">
                     <Setter Property="Opacity" Value="0.58" />
                 </DataTrigger>
@@ -241,6 +286,7 @@
 
                     <!-- Dry-Run Preview Grid -->
                     <DataGrid Grid.Row="2"
+                              Style="{StaticResource PreviewGridStyle}"
                               ItemsSource="{Binding Organize.PreviewRows}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
@@ -298,7 +344,7 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Left: Ordered Files -->
-                        <ui:Card Grid.Column="0" Padding="12" VerticalAlignment="Stretch">
+                        <ui:Card Grid.Column="0" Padding="12" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -348,7 +394,7 @@
                         </ui:Card>
 
                         <!-- Right: Target Name List & Options -->
-                        <ui:Card Grid.Column="2" Padding="12" VerticalAlignment="Stretch">
+                        <ui:Card Grid.Column="2" Padding="12" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -388,6 +434,9 @@
                                     <TextBox Grid.Row="1"
                                              Text="{Binding Rename.RawNameListText, UpdateSourceTrigger=PropertyChanged}"
                                              AcceptsReturn="True"
+                                             MinHeight="96"
+                                             VerticalAlignment="Stretch"
+                                             VerticalContentAlignment="Top"
                                              VerticalScrollBarVisibility="Auto"
                                              HorizontalScrollBarVisibility="Auto"
                                              TextWrapping="NoWrap"
@@ -435,7 +484,7 @@
                                     <ui:TextBox Text="{Binding Rename.ReplaceText, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
 
-                                <!-- Shared Options -->
+                                <!-- Shared Options & Destination Folder -->
                                 <StackPanel Grid.Row="2" Margin="0,8,0,0">
                                     <WrapPanel Margin="0,0,0,6">
                                         <CheckBox Content="Keep original extension"
@@ -445,7 +494,7 @@
                                                   IsChecked="{Binding Rename.CleanDuplicateMarkers}" />
                                     </WrapPanel>
 
-                                    <Grid>
+                                    <Grid Margin="0,0,0,6">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="6" />
@@ -464,6 +513,32 @@
                                                   SelectedItem="{Binding Rename.MismatchBehavior}"
                                                   ToolTip="Behavior when fewer names than files" />
                                     </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="6" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="4" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Save to:"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,6,0" />
+                                        <ui:TextBox Grid.Column="1"
+                                                    Text="{Binding Rename.OutputFolderPath, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="Same folder (optional: pick output folder...)" />
+                                        <ui:Button Grid.Column="3"
+                                                   Content="Browse..."
+                                                   Click="BrowseRenameOutputFolder_Click"
+                                                   Padding="10,4" />
+                                        <ui:Button Grid.Column="5"
+                                                   Content="Clear"
+                                                   Command="{Binding Rename.ClearOutputFolderCommand}"
+                                                   Padding="8,4" />
+                                    </Grid>
                                 </StackPanel>
                             </Grid>
                         </ui:Card>
@@ -471,6 +546,7 @@
 
                     <!-- Live Preview DataGrid -->
                     <DataGrid Grid.Row="2"
+                              Style="{StaticResource PreviewGridStyle}"
                               ItemsSource="{Binding Rename.PreviewRows}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"

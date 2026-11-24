@@ -49,11 +49,14 @@
 - Implemented **Phase 2 (`TidyFlow.App` with WPF-UI 4.3.0)** — commit `d955108`:
   - `Models/PreviewOperationRow.cs`, `ViewModels/ObservableObject.cs`, `ViewModels/OrganizeViewModel.cs`, `ViewModels/RenameViewModel.cs`, `ViewModels/MainViewModel.cs`
   - `App.xaml`, `MainWindow.xaml` & `MainWindow.xaml.cs` (`FluentWindow`, `Organize Folder` tab, `List Batch Rename` tab, Explorer drag & drop, live Dry-Run preview grids, confirmation dialogs, saved presets/lists, and header Undo button).
-- Implemented **Phase 3 (Release Packaging & Auto-Update)**:
+- Implemented **Phase 3 (Release Packaging & Auto-Update)** — commit `2b9f2ce`:
   - Switched `MainWindow.xaml` backdrop to `None` with explicit `ApplicationBackgroundBrush` for reliable rendering across Windows 10/11 setups; added `VelopackApp.Build().Run()` and crash logging in `App.xaml.cs`.
   - Added `Velopack 1.2.161` + `Services/AppUpdateService.cs` + header `Updates (v0.3.0)` button in `MainViewModel.cs` & `MainWindow.xaml`.
   - Created [.github/workflows/release.yml](file:///d:/Working/workspaces/SmartToolForPC/.github/workflows/release.yml) to build both `TidyFlow-win-x64-portable.exe` and Velopack installer packages on `v*` tags.
   - Updated [README.md](file:///d:/Working/workspaces/SmartToolForPC/README.md) and published standalone `win-x64` executable to `publish/TidyFlow.App.exe` (verified `11/11` unit tests pass).
+- **UI & Rename Destination Update (from user screenshot review):**
+  - Added optional `OutputDirectory` to `ListRenameOptions`, `TemplateRenameOptions`, `BatchRenamer`, and `RenameViewModel` (`Save to:` folder picker + `Clear` button in **List Batch Rename**), with `OperationKind.MoveAndRename` support and 2 new unit tests (`13/13` total).
+  - Fixed `DataGrid` dark/light theme styling (`PreviewGridStyle` with `DynamicResource` brushes so rows & headers render clearly instead of light grey box) and added `VerticalContentAlignment="Stretch"` + `MinHeight="96"` on the right-side multi-line name list editor.
 
 ### Next Steps
 1. Test `publish\TidyFlow.App.exe` directly on Windows desktop.

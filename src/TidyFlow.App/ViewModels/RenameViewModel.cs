@@ -30,6 +30,7 @@ public sealed class RenameViewModel : ObservableObject
     private string _findText = string.Empty;
     private string _replaceText = string.Empty;
     private string _newListPresetName = string.Empty;
+    private string _outputFolderPath = string.Empty;
     private SavedNameList? _selectedSavedList;
     private OrderedRenameFileItem? _selectedFileItem;
     private string _previewSummary = "Add files (or drag & drop from Explorer) and paste a list of names to preview.";
@@ -55,6 +56,7 @@ public sealed class RenameViewModel : ObservableObject
         PasteClipboardListCommand = new RelayCommand(PasteClipboardList);
         SaveCurrentListCommand = new RelayCommand(SaveCurrentListPreset, () => !string.IsNullOrWhiteSpace(NewListPresetName) && !string.IsNullOrWhiteSpace(RawNameListText));
         DeleteSavedListCommand = new RelayCommand(DeleteSelectedSavedList, () => SelectedSavedList is not null);
+        ClearOutputFolderCommand = new RelayCommand(() => OutputFolderPath = string.Empty, () => !string.IsNullOrWhiteSpace(OutputFolderPath));
         ApplyCommand = new RelayCommand(ApplyPlan, () => CurrentPlan is { ReadyCount: > 0, HasErrors: false });
 
         LoadSavedLists();
@@ -77,6 +79,7 @@ public sealed class RenameViewModel : ObservableObject
     public RelayCommand PasteClipboardListCommand { get; }
     public RelayCommand SaveCurrentListCommand { get; }
     public RelayCommand DeleteSavedListCommand { get; }
+    public RelayCommand ClearOutputFolderCommand { get; }
     public RelayCommand ApplyCommand { get; }
 
     public bool UseListMode
@@ -223,6 +226,19 @@ public sealed class RenameViewModel : ObservableObject
         }
     }
 
+    public string OutputFolderPath
+    {
+        get => _outputFolderPath;
+        set
+        {
+            if (SetProperty(ref _outputFolderPath, value))
+            {
+                RelayCommand.RaiseCanExecuteChanged();
+                RebuildPreview();
+            }
+        }
+    }
+
     public SavedNameList? SelectedSavedList
     {
         get => _selectedSavedList;
@@ -332,7 +348,8 @@ public sealed class RenameViewModel : ObservableObject
                 CleanDuplicateMarkers = CleanDuplicateMarkers,
                 Prefix = Prefix,
                 Suffix = Suffix,
-                MismatchBehavior = MismatchBehavior
+                MismatchBehavior = MismatchBehavior,
+                OutputDirectory = OutputFolderPath
             });
         }
         else
@@ -342,7 +359,8 @@ public sealed class RenameViewModel : ObservableObject
                 Pattern = TemplatePattern,
                 FindText = FindText,
                 ReplaceText = ReplaceText,
-                CleanDuplicateMarkers = CleanDuplicateMarkers
+                CleanDuplicateMarkers = CleanDuplicateMarkers,
+                OutputDirectory = OutputFolderPath
             });
         }
 
