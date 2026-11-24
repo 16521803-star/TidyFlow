@@ -57,13 +57,14 @@
 - **UI & Rename Destination Update (from user screenshot review)** — commit `ba12f67`:
   - Added optional `OutputDirectory` to `ListRenameOptions`, `TemplateRenameOptions`, `BatchRenamer`, and `RenameViewModel` (`Save to:` folder picker + `Clear` button in **List Batch Rename**), with `OperationKind.MoveAndRename` support and 2 new unit tests (`13/13` total).
   - Fixed `DataGrid` dark/light theme styling (`PreviewGridStyle` with `DynamicResource` brushes so rows & headers render clearly instead of light grey box) and added `VerticalContentAlignment="Stretch"` + `MinHeight="96"` on the right-side multi-line name list editor.
-- **Phase 4.0 & 4.1 (`v0.4.0` — Branding, Installer, Smart Rules, Duplicate Finder, Space Cleaner):**
-  - Created `assets/logo.png` (512px rounded Fluent icon) and `assets/tidyflow.ico` (16px–256px multi-resolution ICO); embedded via `<ApplicationIcon>` in `TidyFlow.App.csproj`, `MainWindow.xaml` `Icon`, `README.md`, and `vpk pack --icon`.
-  - Added `Program.cs` entry point for `VelopackApp.Build().Run()`, `--runtime win-x64` in `release.yml`, and `scripts/pack-local.ps1` to produce both `publish/TidyFlow.App.exe` and `publish/installer/TidyFlow-win-Setup.exe`.
-  - Extended `KeywordOrganizeRule` & `OrganizeOptions` with `RuleMatchLogic` (`MatchAny` / `MatchAll`) and `MinimumAgeDays`.
-  - Implemented `DuplicateFinder.cs` (size + 4KB prefix + SHA-256) and `SpaceCleaner.cs` (top largest files, subfolder totals, empty folder cleanup) + `RecycleBinService.cs` + `DuplicatesViewModel.cs` + `SpaceCleanerViewModel.cs` + UI tabs (`Duplicate Finder`, `Space Cleaner`).
+- **Phase 4.0 & 4.1 (`v0.4.0`)** — commit `157a239` (tag `v0.4.0` pushed):
+  - Created `assets/logo.png` and `assets/tidyflow.ico`; embedded across `.csproj`, `MainWindow`, `README.md`, `Program.cs`, and Velopack `TidyFlow-win-Setup.exe`.
+  - Added `RuleMatchLogic` (`MatchAny`/`MatchAll`), `MinimumAgeDays`, `DuplicateFinder.cs`, `SpaceCleaner.cs`, `RecycleBinService.cs`, and UI tabs (`Duplicate Finder`, `Space Cleaner`).
+- **Phase 4.2 (`v0.5.0` — Automation, Media & Explorer Integration):**
+  - Core (`TidyFlow.Core`): Added `ExifDateReader.cs` (pure C# JPEG EXIF `DateTaken` parser integrated into `ByDate` organize & `{exif_date}` rename), `FolderWatchService.cs` (debounced `FileSystemWatcher` + Undo), and `ImageResizePlanner.cs`.
+  - App (`TidyFlow.App`): Added `ImageResizerService.cs` (WIC bitmap scaling/encoding), `ExplorerContextMenuService.cs` (`HKCU\Software\Classes` per-user context menu + `--organize`/`--rename` CLI args in `Program.cs`), `TrayIconService.cs` (`NotifyIcon` with Watch Folder controls & notifications), `ImageResizerViewModel.cs`, `AutomationViewModel.cs`, and UI tabs (`Image Resizer`, `Automation & Tools`).
 
 ### Next Steps
-1. Test `publish\installer\TidyFlow-win-Setup.exe` on Windows (verifying Desktop & Start Menu shortcut icon) or `publish\TidyFlow.App.exe`.
-2. Push tag `v0.4.0` (`git tag v0.4.0 && git push origin v0.4.0`) whenever ready to publish the `v0.4.0` GitHub Release.
-3. Next planned milestone: **Phase 4.2 (`v0.5.0`)** — System Tray Watch Folder, Bulk Image Resizer/Converter, Explorer Context Menu, EXIF Date Renaming.
+1. Test `publish\installer\TidyFlow-win-Setup.exe` (`v0.5.0`) or `publish\TidyFlow.App.exe`.
+2. Push tag `v0.5.0` (`git tag v0.5.0 && git push origin v0.5.0`) when ready to release `v0.5.0` on GitHub Releases.
+3. Next planned milestone: **Phase 4.3 (`v0.6.0`)** — Windows Native OCR (`Windows.Media.Ocr`) + optional AI Smart Organize.

@@ -120,7 +120,7 @@
                     IsClosable="True" />
 
         <!-- Main Workspace Tabs -->
-        <TabControl Grid.Row="2" Margin="16,0,16,16">
+        <TabControl Grid.Row="2" Margin="16,0,16,16" SelectedIndex="{Binding ActiveTabIndex, Mode=TwoWay}">
             <!-- TAB 1: ORGANIZE FOLDER -->
             <TabItem Header="Organize Folder">
                 <Grid Margin="0,12,0,0" AllowDrop="True" Drop="OrganizeArea_Drop" DragOver="Files_DragOver">
@@ -194,16 +194,20 @@
                                               SelectedItem="{Binding Organize.SelectedMode}" />
                                 </Grid>
 
-                                <Grid Margin="0,0,0,8" Visibility="{Binding Organize.IsDateMode, Converter={StaticResource BoolToVis}}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="110" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Date Format:" VerticalAlignment="Center" />
-                                    <ComboBox Grid.Column="1"
-                                              ItemsSource="{Binding Organize.AvailableDateFormats}"
-                                              SelectedItem="{Binding Organize.SelectedDateFormat}" />
-                                </Grid>
+                                <StackPanel Margin="0,0,0,8" Visibility="{Binding Organize.IsDateMode, Converter={StaticResource BoolToVis}}">
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Date Format:" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding Organize.AvailableDateFormats}"
+                                                  SelectedItem="{Binding Organize.SelectedDateFormat}" />
+                                    </Grid>
+                                    <CheckBox Content="Use EXIF Date Taken for photos when available"
+                                              IsChecked="{Binding Organize.UseExifDateWhenAvailable}" />
+                                </StackPanel>
 
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
@@ -504,7 +508,7 @@
 
                                 <!-- Template Mode Body -->
                                 <StackPanel Grid.Row="1" Visibility="{Binding Rename.UseTemplateMode, Converter={StaticResource BoolToVis}}">
-                                    <TextBlock Text="Pattern ({index}, {name}, {date}, {ext}):" Margin="0,0,0,4" />
+                                    <TextBlock Text="Pattern ({index}, {name}, {date}, {exif_date}, {ext}):" Margin="0,0,0,4" />
                                     <ui:TextBox Text="{Binding Rename.TemplatePattern, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
                                     <TextBlock Text="Find Text:" Margin="0,0,0,4" />
                                     <ui:TextBox Text="{Binding Rename.FindText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
@@ -820,6 +824,233 @@
                                    Padding="16,8"
                                    Click="DeleteLargeFiles_Click" />
                     </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 5: IMAGE RESIZER -->
+            <TabItem Header="Image Resizer">
+                <Grid Margin="0,12,0,0" AllowDrop="True" Drop="ImagesArea_Drop" DragOver="Files_DragOver">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ui:Card Grid.Row="0" Padding="12" Margin="0,0,0,10">
+                        <DockPanel>
+                            <TextBlock Text="Drag &amp; drop images here (JPG, PNG, BMP, TIFF) or load files:"
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <ui:Button Content="Add Images..." Click="AddImages_Click" Margin="0,0,6,0" Padding="10,5" />
+                                <ui:Button Content="From Folder..." Click="AddImagesFolder_Click" Margin="0,0,6,0" Padding="10,5" />
+                                <ui:Button Content="Clear" Command="{Binding ImageResizer.ClearFilesCommand}" Padding="10,5" />
+                            </StackPanel>
+                        </DockPanel>
+                    </ui:Card>
+
+                    <ui:Card Grid.Row="1" Padding="12" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="8" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.1*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="0.9*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="0.7*" />
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Grid.Column="0"
+                                          ItemsSource="{Binding ImageResizer.AvailableModes}"
+                                          SelectedItem="{Binding ImageResizer.SelectedMode}"
+                                          ToolTip="Resize mode" />
+                                <ui:TextBox Grid.Column="2"
+                                            Text="{Binding ImageResizer.TargetWidthText, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="Width (px)"
+                                            ToolTip="Target width (px)" />
+                                <ui:TextBox Grid.Column="4"
+                                            Text="{Binding ImageResizer.TargetHeightText, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="Height (px)"
+                                            ToolTip="Target height (px)" />
+                                <ui:TextBox Grid.Column="6"
+                                            Text="{Binding ImageResizer.PercentageText, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="%"
+                                            ToolTip="Percentage (for Percentage mode)" />
+                                <ComboBox Grid.Column="8"
+                                          ItemsSource="{Binding ImageResizer.AvailableFormats}"
+                                          SelectedItem="{Binding ImageResizer.SelectedFormat}"
+                                          ToolTip="Output image format" />
+                                <ui:TextBox Grid.Column="10"
+                                            Text="{Binding ImageResizer.Suffix, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="Suffix"
+                                            ToolTip="Filename suffix (e.g. _resized)" />
+                            </Grid>
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox Grid.Column="0"
+                                          Content="Do not upscale smaller images"
+                                          IsChecked="{Binding ImageResizer.DoNotUpscale}"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,18,0" />
+                                <TextBlock Grid.Column="1" Text="Save to:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <ui:TextBox Grid.Column="2"
+                                            Text="{Binding ImageResizer.OutputFolderPath, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="Same folder (optional: pick output folder...)" />
+                                <ui:Button Grid.Column="4" Content="Browse..." Click="BrowseImageOutputFolder_Click" Padding="10,4" />
+                                <ui:Button Grid.Column="6" Content="Clear" Command="{Binding ImageResizer.ClearOutputFolderCommand}" Padding="8,4" />
+                            </Grid>
+                        </Grid>
+                    </ui:Card>
+
+                    <DataGrid Grid.Row="2"
+                              Style="{StaticResource PreviewGridStyle}"
+                              ItemsSource="{Binding ImageResizer.PreviewRows}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              RowStyle="{StaticResource PreviewRowStyle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110" />
+                            <DataGridTextColumn Header="Source Image" Binding="{Binding SourceName}" Width="1.2*" />
+                            <DataGridTextColumn Header="Output File" Binding="{Binding TargetDisplay}" Width="1.4*" />
+                            <DataGridTextColumn Header="Operation" Binding="{Binding Note}" Width="1.1*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="3" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding ImageResizer.PreviewSummary}" VerticalAlignment="Center" FontWeight="Medium" />
+                        <ui:Button Grid.Column="1"
+                                   Content="Resize / Convert Images"
+                                   Appearance="Primary"
+                                   Padding="18,8"
+                                   Command="{Binding ImageResizer.ApplyCommand}" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 6: AUTOMATION & TOOLS -->
+            <TabItem Header="Automation &amp; Tools">
+                <Grid Margin="0,12,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Watch Folder Card -->
+                    <ui:Card Grid.Row="0" Padding="14" Margin="0,0,0,12">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock Text="Background Watch Folder (System Tray)" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Automation.WatchStatusText}"
+                                           Foreground="#9CA3AF"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center" />
+                            </DockPanel>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="6" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="220" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="Folder:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <ui:TextBox Grid.Column="1" Text="{Binding Automation.WatchFolderPath, UpdateSourceTrigger=PropertyChanged}" />
+                                <ui:Button Grid.Column="3" Content="Browse..." Click="BrowseWatchFolder_Click" />
+                                <ComboBox Grid.Column="5"
+                                          ItemsSource="{Binding Automation.AvailableWatchModes}"
+                                          SelectedItem="{Binding Automation.WatchMode}" />
+                                <ui:Button Grid.Column="7"
+                                           Content="{Binding Automation.WatchButtonText}"
+                                           Appearance="Primary"
+                                           Command="{Binding Automation.ToggleWatchCommand}" />
+                            </Grid>
+
+                            <DockPanel>
+                                <CheckBox Content="Minimize to System Tray when closing window while Watch Folder is active"
+                                          IsChecked="{Binding Automation.MinimizeToTrayOnClose}"
+                                          VerticalAlignment="Center" />
+                                <ui:Button Content="Minimize to Tray Now"
+                                           Click="MinimizeToTray_Click"
+                                           HorizontalAlignment="Right"
+                                           Padding="12,5" />
+                            </DockPanel>
+                        </StackPanel>
+                    </ui:Card>
+
+                    <!-- Windows Explorer Context Menu Card -->
+                    <ui:Card Grid.Row="1" Padding="14" Margin="0,0,0,12">
+                        <DockPanel>
+                            <StackPanel>
+                                <TextBlock Text="Windows Explorer Right-Click Integration" FontWeight="SemiBold" FontSize="14" />
+                                <TextBlock Text="{Binding Automation.ExplorerMenuStatusText}" Foreground="#9CA3AF" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <ui:Button Content="{Binding Automation.ExplorerMenuButtonText}"
+                                       Command="{Binding Automation.ToggleExplorerMenuCommand}"
+                                       Appearance="Secondary"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       Padding="14,6" />
+                        </DockPanel>
+                    </ui:Card>
+
+                    <!-- Watch Activity Log -->
+                    <ui:Card Grid.Row="2" Padding="14" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                                <TextBlock Text="Watch Folder Activity Log" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <ui:Button Content="Clear Log"
+                                           Command="{Binding Automation.ClearLogsCommand}"
+                                           HorizontalAlignment="Right"
+                                           Padding="10,4" />
+                            </DockPanel>
+                            <ListBox Grid.Row="1"
+                                     ItemsSource="{Binding Automation.ActivityLogs}"
+                                     FontFamily="Consolas"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                        </Grid>
+                    </ui:Card>
                 </Grid>
             </TabItem>
         </TabControl>

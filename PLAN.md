@@ -104,10 +104,10 @@ TidyFlow/
   - Find and safely remove empty subfolders (preview list before deleting)
 
 #### 4.2 `v0.5.0` — Automation, Media & Explorer Integration
-- [ ] **System Tray Watch Folder:** Optional background monitor for `Downloads` that auto-organizes newly finished downloads (ignoring `.crdownload`/`.part`/`.tmp`) with Undo logging
-- [ ] **Bulk Image Resizer & Converter:** Resize by width/percentage and convert between `PNG`, `JPG`, `WEBP` into a target output folder
-- [ ] **Windows Explorer Context Menu:** Right-click files/folders $\rightarrow$ *"Organize / Batch Rename with TidyFlow"* (user-space `HKCU\Software\Classes` registration toggle in Settings—no admin required)
-- [ ] **EXIF Date Renaming:** Read real camera `Date Taken` from photos for accurate `{exif_date}` renaming & `ByDate` grouping
+- [x] **System Tray Watch Folder:** Background monitor (`FolderWatchService` + `TrayIconService`) for `Downloads` that auto-organizes newly finished downloads (ignoring `.crdownload`/`.part`/`.tmp`) with Undo logging and balloon notifications
+- [x] **Bulk Image Resizer & Converter:** Resize by width/height/fit/percentage and convert between `PNG`, `JPG`, `BMP`, `TIFF` into a target output folder (`ImageResizePlanner` + `ImageResizerService`)
+- [x] **Windows Explorer Context Menu:** Right-click files/folders $\rightarrow$ *"Organize / Batch Rename with TidyFlow"* (`ExplorerContextMenuService` via `HKCU\Software\Classes` — no admin required)
+- [x] **EXIF Date Renaming:** Read real camera `Date Taken` from JPEG photos (`ExifDateReader`) for accurate `{exif_date}` renaming & `ByDate` grouping
 
 #### 4.3 `v0.6.0` — Smart OCR & Optional AI Organization
 - [ ] **Windows Native OCR Rename Helper:** Use built-in `Windows.Media.Ocr` (zero external model download) to extract text from screenshots/scanned docs for filename suggestions

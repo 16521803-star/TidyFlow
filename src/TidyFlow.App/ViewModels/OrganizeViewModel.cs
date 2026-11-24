@@ -50,6 +50,7 @@ public sealed class OrganizeViewModel : ObservableObject
     private string _folderPath = string.Empty;
     private OrganizeMode _selectedMode = OrganizeMode.ByCategory;
     private DateGroupingFormat _selectedDateFormat = DateGroupingFormat.YearMonth;
+    private bool _useExifDateWhenAvailable = true;
     private bool _includeSubdirectories;
     private bool _ignoreActiveDownloads = true;
     private string _newRuleFolder = string.Empty;
@@ -137,6 +138,18 @@ public sealed class OrganizeViewModel : ObservableObject
     }
 
     public bool IsDateMode => SelectedMode == OrganizeMode.ByDate;
+
+    public bool UseExifDateWhenAvailable
+    {
+        get => _useExifDateWhenAvailable;
+        set
+        {
+            if (SetProperty(ref _useExifDateWhenAvailable, value))
+            {
+                RebuildPreviewFromScanned();
+            }
+        }
+    }
 
     public bool IncludeSubdirectories
     {
@@ -281,6 +294,7 @@ public sealed class OrganizeViewModel : ObservableObject
         {
             Mode = SelectedMode,
             DateFormat = SelectedDateFormat,
+            UseExifDateWhenAvailable = UseExifDateWhenAvailable,
             MinimumAgeDays = ParsePositiveInt(GlobalMinimumAgeDaysText),
             CustomRules = CustomRules.Select(r => r.ToCoreRule()).ToList()
         };

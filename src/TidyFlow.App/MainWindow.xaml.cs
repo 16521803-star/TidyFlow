@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using TidyFlow.App.Services;
 using TidyFlow.App.ViewModels;
 using Wpf.Ui.Controls;
 
@@ -8,13 +10,73 @@ namespace TidyFlow.App;
 
 public partial class MainWindow : FluentWindow
 {
+    private readonly TrayIconService _trayService;
+    private bool _isExiting;
+
     public MainViewModel ViewModel { get; }
 
     public MainWindow()
     {
-        ViewModel = new MainViewModel();
+        _trayService = new TrayIconService(
+            onOpenRequested: RestoreFromTray,
+            onToggleWatchRequested: () => Dispatcher.Invoke(() => ViewModel?.Automation.ToggleWatch()),
+            onExitRequested: ExitApplication);
+
+        ViewModel = new MainViewModel((title, msg) => _trayService.ShowNotification(title, msg));
+        ViewModel.Automation.WatchStateChanged += (_, isWatching) =>
+            _trayService.UpdateWatchState(isWatching, ViewModel.Automation.WatchFolderPath);
+
         DataContext = ViewModel;
         InitializeComponent();
+
+        Closing += MainWindow_Closing;
+    }
+
+    public void ApplyStartupArgs(string[] args) => ViewModel.ApplyStartupArgs(args);
+
+    private void MainWindow_Closing(object? sender, CancelEventArgs e)
+    {
+        if (!_isExiting && ViewModel.Automation.IsWatching && ViewModel.Automation.MinimizeToTrayOnClose)
+        {
+            e.Cancel = true;
+            Hide();
+            _trayService.ShowNotification(
+                "TidyFlow is running in the background",
+                "Watch Folder is still active. Double-click the tray icon to reopen.");
+            return;
+        }
+
+        ViewModel.Automation.Dispose();
+        _trayService.Dispose();
+    }
+
+    private void MinimizeToTray_Click(object sender, RoutedEventArgs e)
+    {
+        Hide();
+        _trayService.ShowNotification("TidyFlow minimized", "Double-click the tray icon to reopen.");
+    }
+
+    private void RestoreFromTray()
+    {
+        Dispatcher.Invoke(() =>
+        {
+            Show();
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
+
+            Activate();
+        });
+    }
+
+    private void ExitApplication()
+    {
+        Dispatcher.Invoke(() =>
+        {
+            _isExiting = true;
+            Close();
+        });
     }
 
     private void BrowseOrganizeFolder_Click(object sender, RoutedEventArgs e)
@@ -252,6 +314,71 @@ public partial class MainWindow : FluentWindow
         if (confirm == System.Windows.MessageBoxResult.Yes && ViewModel.SpaceCleaner.CleanEmptyFoldersCommand.CanExecute(null))
         {
             ViewModel.SpaceCleaner.CleanEmptyFoldersCommand.Execute(null);
+        }
+    }
+
+    private void AddImages_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Select images to resize or convert",
+            Filter = "Images|*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff|All Files|*.*",
+            Multiselect = true
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.ImageResizer.AddPaths(dialog.FileNames);
+        }
+    }
+
+    private void AddImagesFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Load all images from folder"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.ImageResizer.AddPaths(new[] { dialog.FolderName });
+        }
+    }
+
+    private void BrowseImageOutputFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select output folder for resized images"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.ImageResizer.OutputFolderPath = dialog.FolderName;
+        }
+    }
+
+    private void ImagesArea_Drop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] dropped && dropped.Length > 0)
+        {
+            ViewModel.ImageResizer.AddPaths(dropped);
+        }
+    }
+
+    private void BrowseWatchFolder_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select folder to watch automatically",
+            InitialDirectory = Directory.Exists(ViewModel.Automation.WatchFolderPath)
+                ? ViewModel.Automation.WatchFolderPath
+                : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            ViewModel.Automation.WatchFolderPath = dialog.FolderName;
         }
     }
 }

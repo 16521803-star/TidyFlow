@@ -13,6 +13,7 @@ public sealed class MainViewModel : ObservableObject
     private readonly AppUpdateService _updateService = new();
 
     private bool _isDarkTheme = true;
+    private int _activeTabIndex;
     private bool _isStatusOpen;
     private string _statusTitle = "Ready";
     private string _statusMessage = string.Empty;
@@ -21,12 +22,14 @@ public sealed class MainViewModel : ObservableObject
     private bool _canUndo;
     private bool _isCheckingUpdates;
 
-    public MainViewModel()
+    public MainViewModel(Action<string, string>? showTrayNotification = null)
     {
         Organize = new OrganizeViewModel(_executor, _presetStore, ShowStatus, RefreshUndoState);
         Rename = new RenameViewModel(_executor, _presetStore, ShowStatus, RefreshUndoState);
         Duplicates = new DuplicatesViewModel(ShowStatus);
         SpaceCleaner = new SpaceCleanerViewModel(ShowStatus);
+        ImageResizer = new ImageResizerViewModel(ShowStatus);
+        Automation = new AutomationViewModel(_executor, _presetStore, ShowStatus, RefreshUndoState, showTrayNotification);
 
         UndoLatestCommand = new RelayCommand(UndoLatest, () => CanUndo);
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
@@ -43,6 +46,44 @@ public sealed class MainViewModel : ObservableObject
     public DuplicatesViewModel Duplicates { get; }
 
     public SpaceCleanerViewModel SpaceCleaner { get; }
+
+    public ImageResizerViewModel ImageResizer { get; }
+
+    public AutomationViewModel Automation { get; }
+
+    public int ActiveTabIndex
+    {
+        get => _activeTabIndex;
+        set => SetProperty(ref _activeTabIndex, value);
+    }
+
+    public void ApplyStartupArgs(string[] args)
+    {
+        if (args.Length < 2)
+        {
+            return;
+        }
+
+        if (string.Equals(args[0], "--organize", StringComparison.OrdinalIgnoreCase))
+        {
+            var folder = args[1];
+            if (System.IO.Directory.Exists(folder))
+            {
+                ActiveTabIndex = 0;
+                Organize.FolderPath = folder;
+                Organize.ScanAndPreview();
+            }
+        }
+        else if (string.Equals(args[0], "--rename", StringComparison.OrdinalIgnoreCase))
+        {
+            var paths = args.Skip(1).Where(p => System.IO.File.Exists(p) || System.IO.Directory.Exists(p)).ToArray();
+            if (paths.Length > 0)
+            {
+                ActiveTabIndex = 1;
+                Rename.AddPaths(paths);
+            }
+        }
+    }
 
     public RelayCommand UndoLatestCommand { get; }
     public RelayCommand ToggleThemeCommand { get; }

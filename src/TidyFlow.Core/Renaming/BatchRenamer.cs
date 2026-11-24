@@ -1,3 +1,4 @@
+using TidyFlow.Core.Metadata;
 using TidyFlow.Core.Models;
 using TidyFlow.Core.Safety;
 
@@ -140,10 +141,12 @@ public sealed class BatchRenamer
 
             var indexValue = (options.StartIndex + i).ToString().PadLeft(Math.Max(1, options.IndexPadding), '0');
             var dateValue = file.LastWriteTime.ToString(options.DateFormat);
+            var exifDateValue = (ExifDateReader.TryReadDateTaken(file.FullPath) ?? file.LastWriteTime).ToString(options.DateFormat);
 
             var formattedStem = (string.IsNullOrWhiteSpace(options.Pattern) ? "{name}" : options.Pattern)
                 .Replace("{name}", baseName, StringComparison.OrdinalIgnoreCase)
                 .Replace("{index}", indexValue, StringComparison.OrdinalIgnoreCase)
+                .Replace("{exif_date}", exifDateValue, StringComparison.OrdinalIgnoreCase)
                 .Replace("{date}", dateValue, StringComparison.OrdinalIgnoreCase)
                 .Replace("{ext}", file.Extension.TrimStart('.'), StringComparison.OrdinalIgnoreCase);
 

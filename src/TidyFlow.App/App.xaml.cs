@@ -19,6 +19,7 @@ public partial class App : Application
                 ShowInTaskbar = true
             };
             MainWindow = window;
+            window.ApplyStartupArgs(Program.StartupArgs);
             window.Show();
             window.Activate();
         }

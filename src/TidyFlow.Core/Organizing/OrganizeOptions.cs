@@ -38,6 +38,8 @@ public sealed record OrganizeOptions
 
     public bool UseCreationTimeForDate { get; init; } = false;
 
+    public bool UseExifDateWhenAvailable { get; init; } = true;
+
     public IReadOnlyList<KeywordOrganizeRule> CustomRules { get; init; } = Array.Empty<KeywordOrganizeRule>();
 
     public string DefaultOtherFolder { get; init; } = "Others";

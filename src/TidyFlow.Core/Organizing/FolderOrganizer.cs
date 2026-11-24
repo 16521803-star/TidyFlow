@@ -1,3 +1,4 @@
+using TidyFlow.Core.Metadata;
 using TidyFlow.Core.Models;
 using TidyFlow.Core.Renaming;
 using TidyFlow.Core.Safety;
@@ -93,7 +94,10 @@ public sealed class FolderOrganizer
 
     private static string FormatDateFolder(FileEntry file, OrganizeOptions options)
     {
-        var timestamp = options.UseCreationTimeForDate ? file.CreationTime : file.LastWriteTime;
+        var exifDate = options.UseExifDateWhenAvailable
+            ? ExifDateReader.TryReadDateTaken(file.FullPath)
+            : null;
+        var timestamp = exifDate ?? (options.UseCreationTimeForDate ? file.CreationTime : file.LastWriteTime);
         return options.DateFormat switch
         {
             DateGroupingFormat.YearMonth => timestamp.ToString("yyyy-MM"),

@@ -15,7 +15,7 @@ public sealed class AppUpdateService
         get
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            return version is null ? "v0.3.0" : $"v{version.Major}.{version.Minor}.{version.Build}";
+            return version is null ? "v0.5.0" : $"v{version.Major}.{version.Minor}.{version.Build}";
         }
     }
 
